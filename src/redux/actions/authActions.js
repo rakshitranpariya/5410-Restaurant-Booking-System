@@ -4,14 +4,16 @@ import {
   signOut,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
-import { auth } from '../../helpers/firebase-config';
+import { collection, query, where, getDocs, addDoc } from 'firebase/firestore';
+import { auth, db } from '../../helpers/firebase-config';
+
+const userCollectionRef = collection(db, 'users');
 
 export const loadUser = () => async dispatch => {
   try {
-    onAuthStateChanged(auth, currentUser => {
+    onAuthStateChanged(auth, async currentUser => {
       if (currentUser) {
-        dispatch({ type: 'EXISTING_USER', payload: currentUser });
-        localStorage.setItem('token', currentUser?.accessToken);
+        await dispatch(getUserByEmail(currentUser.email, currentUser.accessToken));
       }
     });
 
@@ -25,9 +27,24 @@ export const loadUser = () => async dispatch => {
   }
 };
 
+export const getUserByEmail = (email, accessToken) => async dispatch => {
+  try {
+    const searchQuery = query(userCollectionRef, where('email', '==', email));
+
+    const res = await getDocs(searchQuery);
+    dispatch({ type: 'EXISTING_USER', payload: res.docs[0].data() });
+    localStorage.setItem('token', accessToken);
+  } catch (err) {
+    console.log(err);
+    dispatch({ type: 'AUTH_FAILED' });
+    return false;
+  }
+};
+
 export const register = data => async () => {
   try {
     await createUserWithEmailAndPassword(auth, data?.email, data?.password);
+    await addDoc(userCollectionRef, { email: data.email, type: '1' });
     return true;
   } catch (e) {
     console.log(e);
