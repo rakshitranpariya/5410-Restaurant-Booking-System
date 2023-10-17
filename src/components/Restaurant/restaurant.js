@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import firebase from '../helpers/firebase-config';
+import firebase from '../../helpers/firebase-config';
 import './restaurant.css';
 
 const Restaurant = () => {
@@ -8,7 +8,7 @@ const Restaurant = () => {
     customerName: '',
     reservationDate: '',
     reservationTime: '',
-    numberOfGuests: 1
+    numberOfGuests: 1,
   });
   const [isEditing, setIsEditing] = useState(false);
   const [currentEditId, setCurrentEditId] = useState(null);
@@ -19,12 +19,12 @@ const Restaurant = () => {
 
   const fetchData = async () => {
     try {
-      const user = firebase.auth().currentUser; 
+      const user = firebase.auth().currentUser;
       const db = firebase.firestore();
       const data = await db.collection('reservations').where('userId', '==', user.uid).get();
       setReservations(data.docs.map(doc => ({ ...doc.data(), id: doc.id })));
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
     }
   };
 
@@ -35,15 +35,15 @@ const Restaurant = () => {
     return diffHours > 1;
   };
 
-  const handleInputChange = (event) => {
+  const handleInputChange = event => {
     const { name, value } = event.target;
     setFormData(prevState => ({
       ...prevState,
-      [name]: value
+      [name]: value,
     }));
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async event => {
     event.preventDefault();
     const db = firebase.firestore();
 
@@ -54,20 +54,20 @@ const Restaurant = () => {
     } else {
       await db.collection('reservations').add({
         ...formData,
-        userId: firebase.auth().currentUser.uid
+        userId: firebase.auth().currentUser.uid,
       });
     }
 
     fetchData();
   };
 
-  const handleEdit = (reservation) => {
+  const handleEdit = reservation => {
     setIsEditing(true);
     setCurrentEditId(reservation.id);
     setFormData(reservation);
   };
 
-  const handleDelete = async (reservationId) => {
+  const handleDelete = async reservationId => {
     const db = firebase.firestore();
     await db.collection('reservations').doc(reservationId).delete();
     fetchData();
@@ -102,7 +102,7 @@ const Restaurant = () => {
           value={formData.numberOfGuests}
           onChange={handleInputChange}
         />
-        <button type="submit">{isEditing ? "Update" : "Book"}</button>
+        <button type="submit">{isEditing ? 'Update' : 'Book'}</button>
       </form>
 
       {/* List of Reservations */}
