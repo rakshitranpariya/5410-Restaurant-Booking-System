@@ -3,9 +3,10 @@ import {
   onAuthStateChanged,
   signOut,
   signInWithEmailAndPassword,
+  signInWithPopup,
 } from 'firebase/auth';
 import { collection, query, where, getDocs, addDoc } from 'firebase/firestore';
-import { auth, db } from '../../helpers/firebase-config';
+import { auth, db, provider } from '../../helpers/firebase-config';
 
 const userCollectionRef = collection(db, 'users');
 
@@ -27,9 +28,23 @@ export const loadUser = () => async dispatch => {
   }
 };
 
+export const googleLogin = () => async dispatch => {
+  try {
+    const res = await signInWithPopup(auth, provider);
+    console.log(res.user);
+    const searchQuery = await query(userCollectionRef, where('email', '==', res.user.email));
+    const searchData = await getDocs(searchQuery);
+    console.log('search', searchData.docs);
+  } catch (err) {
+    console.log(err);
+    dispatch({ type: 'AUTH_FAILED' });
+    return false;
+  }
+};
+
 export const getUserByEmail = (email, accessToken) => async dispatch => {
   try {
-    const searchQuery = query(userCollectionRef, where('email', '==', email));
+    const searchQuery = await query(userCollectionRef, where('email', '==', email));
 
     const res = await getDocs(searchQuery);
     dispatch({ type: 'EXISTING_USER', payload: res.docs[0].data() });

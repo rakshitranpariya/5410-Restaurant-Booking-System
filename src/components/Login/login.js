@@ -3,7 +3,7 @@ import { Button, Form, Input, Layout, theme } from 'antd';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import useSimpleReactValidator from '../../helpers/useReactSimpleValidator';
-import { login } from '../../redux/actions/authActions';
+import { googleLogin, login } from '../../redux/actions/authActions';
 import './login.css';
 import notification from '../../constants/notification';
 import { handleSidebarChange } from '../../redux/actions/sidebarAction';
@@ -168,6 +168,18 @@ const Login = () => {
                 >
                   {' '}
                   Log In{' '}
+                </Button>
+              </Form.Item>
+              <Form.Item>
+                <Button
+                  className="login-form-button"
+                  type="primary"
+                  htmlType="submit"
+                  onClick={async () => await dispatch(googleLogin())}
+                  loading={loading}
+                >
+                  {' '}
+                  Google Log In{' '}
                 </Button>
               </Form.Item>
             </Form>
