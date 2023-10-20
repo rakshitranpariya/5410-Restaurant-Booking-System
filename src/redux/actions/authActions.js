@@ -31,10 +31,11 @@ export const loadUser = () => async dispatch => {
 export const googleLogin = () => async dispatch => {
   try {
     const res = await signInWithPopup(auth, provider);
-    console.log(res.user);
     const searchQuery = await query(userCollectionRef, where('email', '==', res.user.email));
     const searchData = await getDocs(searchQuery);
-    console.log('search', searchData.docs);
+    if (searchData.docs.length === 0) await dispatch(register({ email: res.user.email }, true));
+    await dispatch(loadUser());
+    return true;
   } catch (err) {
     console.log(err);
     dispatch({ type: 'AUTH_FAILED' });
@@ -56,16 +57,18 @@ export const getUserByEmail = (email, accessToken) => async dispatch => {
   }
 };
 
-export const register = data => async () => {
-  try {
-    await createUserWithEmailAndPassword(auth, data?.email, data?.password);
-    await addDoc(userCollectionRef, { email: data.email, type: '1' });
-    return true;
-  } catch (e) {
-    console.log(e);
-    return false;
-  }
-};
+export const register =
+  (data, isGoogle = false) =>
+  async () => {
+    try {
+      !isGoogle && (await createUserWithEmailAndPassword(auth, data?.email, data?.password));
+      await addDoc(userCollectionRef, { email: data.email, type: '1' });
+      return true;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+  };
 
 export const login = data => async dispatch => {
   try {
