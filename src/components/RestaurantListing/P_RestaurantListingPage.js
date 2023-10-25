@@ -1,8 +1,6 @@
-// App.js
-
 import React from 'react';
-import RestaurantTile from './RestaurantTile'; // Adjust the path accordingly
-import './App.css'; // You can create an App.css file for general styles
+import RestaurantTile from './C_RestaurentDetailsTile.js';
+import './App.css'; 
 
 const restaurantListingPage = () => {
   return (
@@ -14,7 +12,6 @@ const restaurantListingPage = () => {
         startTime="10:00 AM"
         endTime="8:00 PM"
       />
-      {/* Add more RestaurantTile components as needed */}
     </div>
   );
 };
