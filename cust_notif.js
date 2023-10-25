@@ -14,7 +14,16 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-app.post('/subscribe', (req, res) => {
+app.post('/subscribeForMenuUpdates', (req, res) => {
+
+    /*
+    cURL: 
+    curl --location 'localhost:3000/subscribe' \
+        --header 'Content-Type: application/json' \
+        --data-raw '{ 
+                "email": "aaron25rony@gmail.com"
+                }'
+    */
 
     AWS.config.update({
         accessKeyId: process.env.aws_access_key_id,
@@ -24,7 +33,7 @@ app.post('/subscribe', (req, res) => {
     })
 
     const sns = new AWS.SNS();
-    
+
     const params = {
         Protocol: 'email',
         TopicArn: process.env.aws_sns_menu_item_update_topic_arn,
