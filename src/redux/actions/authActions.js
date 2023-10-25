@@ -3,9 +3,10 @@ import {
   onAuthStateChanged,
   signOut,
   signInWithEmailAndPassword,
+  signInWithPopup,
 } from 'firebase/auth';
 import { collection, query, where, getDocs, addDoc } from 'firebase/firestore';
-import { auth, db } from '../../helpers/firebase-config';
+import { auth, db, provider } from '../../helpers/firebase-config';
 
 const userCollectionRef = collection(db, 'users');
 
@@ -27,9 +28,24 @@ export const loadUser = () => async dispatch => {
   }
 };
 
+export const googleLogin = () => async dispatch => {
+  try {
+    const res = await signInWithPopup(auth, provider);
+    const searchQuery = await query(userCollectionRef, where('email', '==', res.user.email));
+    const searchData = await getDocs(searchQuery);
+    if (searchData.docs.length === 0) await dispatch(register({ email: res.user.email }, true));
+    await dispatch(loadUser());
+    return true;
+  } catch (err) {
+    console.log(err);
+    dispatch({ type: 'AUTH_FAILED' });
+    return false;
+  }
+};
+
 export const getUserByEmail = (email, accessToken) => async dispatch => {
   try {
-    const searchQuery = query(userCollectionRef, where('email', '==', email));
+    const searchQuery = await query(userCollectionRef, where('email', '==', email));
 
     const res = await getDocs(searchQuery);
     dispatch({ type: 'EXISTING_USER', payload: res.docs[0].data() });
@@ -41,16 +57,18 @@ export const getUserByEmail = (email, accessToken) => async dispatch => {
   }
 };
 
-export const register = data => async () => {
-  try {
-    await createUserWithEmailAndPassword(auth, data?.email, data?.password);
-    await addDoc(userCollectionRef, { email: data.email, type: '1' });
-    return true;
-  } catch (e) {
-    console.log(e);
-    return false;
-  }
-};
+export const register =
+  (data, isGoogle = false) =>
+  async () => {
+    try {
+      !isGoogle && (await createUserWithEmailAndPassword(auth, data?.email, data?.password));
+      await addDoc(userCollectionRef, { email: data.email, type: '1' });
+      return true;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+  };
 
 export const login = data => async dispatch => {
   try {

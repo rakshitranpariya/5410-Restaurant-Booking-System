@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { Button, Form, Input, Layout, theme } from 'antd';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import GoogleButton from 'react-google-button';
 import useSimpleReactValidator from '../../helpers/useReactSimpleValidator';
-import { register } from '../../redux/actions/authActions';
+import { googleLogin, register } from '../../redux/actions/authActions';
 import './register.css';
 import notification from '../../constants/notification';
 
@@ -194,6 +195,17 @@ const Register = () => {
                   {' '}
                   Sign Up{' '}
                 </Button>
+              </Form.Item>
+              <Form.Item>
+                <span style={{ display: 'flex', justifyContent: 'center' }}>Or</span>
+              </Form.Item>
+              <Form.Item>
+                <GoogleButton
+                  className="google"
+                  label="Sign Up with Google"
+                  style={{ width: '100%' }}
+                  onClick={async () => await dispatch(googleLogin())}
+                />
               </Form.Item>
             </Form>
           </div>

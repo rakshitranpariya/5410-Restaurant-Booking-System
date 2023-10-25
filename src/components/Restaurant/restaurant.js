@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
+<<<<<<< HEAD
 import firebase from '../../helpers/firebase-config';
+=======
+import { auth, db, provider } from '../../helpers/firebase-config';
+>>>>>>> origin/development
 import './restaurant.css';
 
 const Restaurant = () => {
