@@ -25,6 +25,15 @@ app.post('/subscribeForMenuUpdates', (req, res) => {
                 }'
     */
 
+    /*
+       Steps before using this api:
+       1. Turn on "Stream Details" of the dynamodb menu table; Table > Exports and Streams tab
+       2. Choose the "New and Old images" option
+       3. Attach the lambda function which publishes the email notifications to the customers
+       Note: The lambda function is already created and attached to the dynamodb table and code is available in the lambda/ folder
+    */
+
+
     AWS.config.update({
         accessKeyId: process.env.aws_access_key_id,
         secretAccessKey: process.env.aws_secret_access_key,
