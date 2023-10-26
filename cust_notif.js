@@ -121,3 +121,25 @@ exports.OnReservationCreated = functions.firestore.
 
     });
 
+// Restaurant closed
+
+exports.OnReservationCreated = functions.firestore.
+    document("restaurant/{restaurantID}").onUpdate((snap, context) => {
+        // const isOpen = snap.Change.after._fieldsProto.isOpen.stringValue;
+        // const reason = snap.Change.after._fieldsProto.reason.stringValue;
+
+        const params = {
+            Subject: "Sorry, we are closed !!",
+            Message: "We have to close the restaurant because of the ------",
+            TopicArn: "arn:aws:sns:us-east-1:315128346896:menu-item-update",
+          };
+    
+          console.log("Sending message to SNS topic");
+          sns.publish(params, (err, data) => {
+            if (err) console.error(err);
+            console.log(data);
+          });
+          console.log("Message sent to SNS topic");
+    });
+
+
