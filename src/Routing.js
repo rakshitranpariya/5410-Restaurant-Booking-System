@@ -10,6 +10,10 @@ const Restaurant = lazy(() => import('./components/Restaurant/restaurant'));
 const Register = lazy(() => import('./components/Register/register'));
 const ForgotPassword = lazy(() => import('./components/ForgotPassword/forgotPassword'));
 const ChangePassword = lazy(() => import('./components/changePassword/changePassword'));
+const RestaurantListing = lazy(() =>
+  import('./components/RestaurantListing/P_RestaurantListingPage')
+);
+const MenuPage = lazy(() => import('./components/MenuListing/P_MenulistingPage'));
 const { Content } = Layout;
 
 const Routing = () => {
@@ -35,6 +39,14 @@ const Routing = () => {
     {
       path: '/change-password/:id/:token',
       component: <ChangePassword />,
+    },
+    {
+      path: '/restaurantListing',
+      component: <RestaurantListing />,
+    },
+    {
+      path: '/menu/:restaurantId',
+      component: <MenuPage />,
     },
   ].filter(cur => cur);
 
