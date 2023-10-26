@@ -14,6 +14,15 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
+AWS.config.update({
+    accessKeyId: process.env.aws_access_key_id,
+    secretAccessKey: process.env.aws_secret_access_key,
+    region: process.env.aws_sns_region,
+    sessionToken: process.env.aws_session_token
+})
+
+const sns = new AWS.SNS();
+
 app.post('/subscribeForMenuUpdates', (req, res) => {
 
     /*
@@ -33,16 +42,6 @@ app.post('/subscribeForMenuUpdates', (req, res) => {
        Note: The lambda function is already created and attached to the dynamodb table and code is available in the lambda/ folder
     */
 
-
-    AWS.config.update({
-        accessKeyId: process.env.aws_access_key_id,
-        secretAccessKey: process.env.aws_secret_access_key,
-        region: process.env.aws_sns_region,
-        sessionToken: process.env.aws_session_token
-    })
-
-    const sns = new AWS.SNS();
-
     const params = {
         Protocol: 'email',
         TopicArn: process.env.aws_sns_menu_item_update_topic_arn,
@@ -55,3 +54,70 @@ app.post('/subscribeForMenuUpdates', (req, res) => {
     });
 
 });
+
+/*
+    install firebase-tools:
+    > npm install -g firebase-tools
+
+    login to firebase:
+    firebase login
+
+    initialize firebase:
+    firebase init
+
+    deploy firebase:
+    firebase deploy
+*/
+
+
+/*
+    *********** Firestore to Lambda trigger ***********
+    This is the lambda function that is triggered when there is a new entry in the google cloud firestore database.
+*/
+
+
+// Reservation created
+exports.OnReservationCreated = functions.firestore.
+    document("reservations/{reservationId}").onCreate((snap, context) => {
+      const name = snap._fieldsProto.name.stringValue;
+      const date = snap._fieldsProto.date.stringValue;
+      const time = snap._fieldsProto.time.stringValue;
+    //   const anotherAttributeFromCreatenapshot = snap._fieldsProto.name.stringValue;
+
+      const params = {
+        Subject: name,
+        Message: "Your reservation has been successfully created on " + date + " at " + time,
+        TopicArn: "arn:aws:sns:us-east-1:315128346896:menu-item-update",
+      };
+
+      console.log("Sending message to SNS topic");
+      sns.publish(params, (err, data) => {
+        if (err) console.error(err);
+        console.log(data);
+      });
+      console.log("Message sent to SNS topic");
+    });
+
+
+// Reservation updated
+
+exports.OnReservationCreated = functions.firestore.
+    document("reservations/{reservationId}").onUpdate((snap, context) => {
+        // const name = snap.Change.after._fieldsProto.name.stringValue;
+
+        const params = {
+            Subject: "We have an update for you !!",
+            Message: "There's a change in ------",
+            TopicArn: "arn:aws:sns:us-east-1:315128346896:menu-item-update",
+          };
+    
+          console.log("Sending message to SNS topic");
+          sns.publish(params, (err, data) => {
+            if (err) console.error(err);
+            console.log(data);
+          });
+          console.log("Message sent to SNS topic");
+
+
+    });
+
