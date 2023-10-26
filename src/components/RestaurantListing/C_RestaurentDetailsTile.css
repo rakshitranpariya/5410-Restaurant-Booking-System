@@ -1,0 +1,36 @@
+.tile-container {
+  display: flex;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.image-container {
+  flex: 1;
+}
+
+.image {
+  width: 100%;
+  height: auto;
+}
+
+.details-container {
+  flex: 2;
+  padding: 20px;
+}
+
+.title {
+  font-size: 1.5rem;
+  margin: 0 0 10px 0;
+}
+
+.time-container {
+  margin-top: 10px;
+}
+
+.time-text {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #555;
+}
