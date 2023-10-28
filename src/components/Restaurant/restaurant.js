@@ -79,7 +79,6 @@ const Restaurant = () => {
     // Add 1 hour to the current date
     currentDate.setHours(currentDate.getHours() + 1);
     const reservationDateTime = new Date(`${reservationDate}T${reservationTime}`);
-    // const diffHours = (reservationDateTime -currentDate) / 1000 / 60 / 60;
     const diffHours = (reservationDateTime > currentDate)
     
 
@@ -339,14 +338,11 @@ let valueDateFinal=moment(value,'HH:mm a').format('HH:mm a')
 
   return (
     <div className="restaurant-container">
-      {/* <div className=""> */}
+      {}
       {contextHolder}
       <ToastContainer />
-      {/* <Modal title="Confirm" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-        <p>Yes, I want to delete this record.</p>
-
-      </Modal> */}
-      {/* toggle={handleCancel} */}
+      {}
+      {}
       <Modal isOpen={isModalOpen} >
         <ModalHeader >Confirm</ModalHeader>
         <ModalBody>
@@ -361,7 +357,7 @@ let valueDateFinal=moment(value,'HH:mm a').format('HH:mm a')
           console.log("hello", restaurentData?.filter(f => (f.restaurantid == formData.restaurantid))[0]?.openinghours?.substring(0, 5))
         }
       </Modal>
-      {/* toggle={handleCancelReservationModal} */}
+      {}
       <Modal isOpen={isShowAddReservation}  >
         <ModalHeader >{isEditing ? "Edit Booking Details" : "Add New Booking Details"}</ModalHeader>
         <ModalBody>
@@ -478,12 +474,9 @@ let valueDateFinal=moment(value,'HH:mm a').format('HH:mm a')
         </ModalFooter>
       </Modal>
 
-      {/* Reservation Form */}
+      {}
 
-
-
-      {/* List of Reservations */}
-
+      {}
 
       {}
 
@@ -555,14 +548,10 @@ let valueDateFinal=moment(value,'HH:mm a').format('HH:mm a')
                       {canEditOrDelete(reservation?.data?.reservationDate, reservation?.data?.reservationTime) && (
                         // {true && (
                         <>
-                          {/* <button className='mx-2' onClick={() => handleEdit(reservation)}>
-                          
-                            Edit
-                            
-                            </button> */}
+                          {}
                           <BiEdit className="mx-2 h5 " style={{ cursor: "pointer" }} onClick={() => handleEdit(reservation)} />
 
-                          {/* <button className='bg-danger' onClick={() => handleDelete(reservation.id)}>Delete</button> */}
+                          {}
                           <AiOutlineDelete className='text-danger h5 cursor-pointer ' style={{ cursor: "pointer" }} onClick={() => handleDelete(reservation?.id)} />
                         </>
                       )}
