@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import RestaurantTile from './C_RestaurentDetailsTile';
+import { useNavigate } from 'react-router-dom';
 
 const RestaurantListingPage = () => {
   const [restaurantData, setRestaurantData] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,6 +30,11 @@ const RestaurantListingPage = () => {
     fetchData();
   }, []);
 
+  const handleReservationClick = () => {
+    // Navigate to "/restaurants"
+    navigate('/restaurants');
+  };
+
   return (
     <div>
       <h1 className="m-5">Restaurant List</h1>
@@ -37,14 +44,19 @@ const RestaurantListingPage = () => {
             <div key={restaurant.restaurantid} className="col-md-4">
               <RestaurantTile
                 restaurantId={restaurant.restaurantid}
-                title={restaurant.name || restaurant.restaurantname || 'Unnamed Restaurant'}
+                title={restaurant.name}
                 city={restaurant.city}
-                startTime={restaurant.openinghours || 'Not specified'}
-                endTime={restaurant.closinghours || 'Not specified'}
+                startTime={restaurant.openinghours}
+                endTime={restaurant.closinghours}
               />
             </div>
           ))}
         </div>
+      </div>
+      <div className="text-center mt-4">
+        <button className="btn btn-primary btn-lg" onClick={handleReservationClick}>
+          Make a Reservation
+        </button>
       </div>
     </div>
   );
