@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { auth, db, provider } from '../../helpers/firebase-config';
 import './restaurant.css';
 import { collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
-// import { Button, notification } from 'antd';
 import { message } from 'antd';
-// import { Modal } from 'antd';
 import { useSelector } from 'react-redux'
 import { Table, Button, Modal, ModalBody, ModalFooter, ModalHeader, Card, CardBody, CardHeader, Input } from "reactstrap"
 import { BiEdit } from 'react-icons/bi';
@@ -34,7 +32,6 @@ const Restaurant = () => {
 
   const [isShowAddReservation, setisShowAddReservation] = useState(false);
   const [restaurentData, setRestaurentData] = useState([]);
-  // const [restaurantid, setrestaurantid] = useState(null);
 
 
 
@@ -52,19 +49,16 @@ const Restaurant = () => {
       let url = "https://nsbbk26x0l.execute-api.us-east-1.amazonaws.com/getall"
       
       let data = await axios.get(url)
-      // let response = data.json()
       console.log("data", data.data);
       let filterData=data?.data.filter((f)=>f.data.userId==userEmail)
       console.log("filterData",filterData)
-      // let sorData = data?.data?.sort((a, b) => new Date(a?.data?.reservationDate) < new Date(b?.data?.reservationDate))
+    
       setReservations(filterData)
 
-      // setReservations(data.map(doc => ({ ...doc.data, id: doc.id })));
-
-      // setReservations(arr);
+      
     } catch (error) {
       console.error('Error fetcdatadatadatahing data:', error);
-      // console.error('datadatadata:', error);
+      
     }
   };
 
@@ -85,11 +79,10 @@ const Restaurant = () => {
     // Add 1 hour to the current date
     currentDate.setHours(currentDate.getHours() + 1);
     const reservationDateTime = new Date(`${reservationDate}T${reservationTime}`);
-    // const diffHours = (reservationDateTime -currentDate) / 1000 / 60 / 60;
     const diffHours = (reservationDateTime > currentDate)
-    // alert(diffHours)
+    
 
-    // console.log("diffHours", diffHours)
+  
     return diffHours
   };
 
@@ -117,9 +110,6 @@ let maxDateFinal=moment(maxDate,'HH:mm a').format('HH:mm a')
 let valueDateFinal=moment(value,'HH:mm a').format('HH:mm a')
 
 
-      // console.log("minDate", moment(minDate,'HH:mm a').format('HH:mm a')<moment(value,'HH:mm a').format('HH:mm a'),moment(maxDate,'HH:mm a').format('HH:mm a')>moment(value,'HH:mm a').format('HH:mm a') , minDate,value,maxDate,getValue)
-      // console.log("minDate",typeof minDate,typeof  value,typeof maxDate)
-      // console.log("maxTime > currenttime > minTime", maxTime > currenttime && currenttime > minTime)
 
       if (valueDateFinal>=minDateFinal && valueDateFinal<=maxDateFinal ) {
         setFormData(prevState => ({
@@ -155,29 +145,20 @@ let valueDateFinal=moment(value,'HH:mm a').format('HH:mm a')
     const config = {
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*" // this might not be necessary if CORS is correctly setup on the server
+        "Access-Control-Allow-Origin": "*" 
       }
     };
   
     if (checkValidation) {
       toast.error("Please enter all required fields.")
-      // messageApi.open({
-      //   type: 'error',
-      //   content: 'Please enter all required fields.',
-      //   duration: 5,
-      //   style: { float: "right" }
-      // });
-      // window.scrollTo({
-      //   top: 0,
-      //   behavior: "smooth", // for smoothly scrolling
-      // });
+   
   
       return false
     }
 
     if (isEditing) {
       
-      // let url = "https://nsbbk26x0l.execute-api.us-east-1.amazonaws.com/update";
+      
       let url="https://3xkugu6ck3.execute-api.us-east-1.amazonaws.com/reservation/updatereservation"
       let setData = {
         "pathParameters": {
@@ -191,12 +172,7 @@ let valueDateFinal=moment(value,'HH:mm a').format('HH:mm a')
         }
 
       }
-      // let setData={
-      //   ...formData,
-      //   userId: userEmail,
-      //   id: currentEditId
-
-      // }
+      
       let config = {
         method: 'post',
         maxBodyLength: Infinity,
@@ -207,11 +183,7 @@ let valueDateFinal=moment(value,'HH:mm a').format('HH:mm a')
         data : setData
       };
       let data = await axios.post(url, config.data, config.headers)
-      // await updateDoc(washingtonRef, {
-      //   ...formData,
-      //   userId: userEmail,
-
-      // });
+      
       console.log("data", data)
 
       messageApi.open({
@@ -223,22 +195,15 @@ let valueDateFinal=moment(value,'HH:mm a').format('HH:mm a')
 
       setIsEditing(false);
       setCurrentEditId(null);
-      // setFormData({})
+      
     } else {
 
       
-      // let url = "https://nsbbk26x0l.execute-api.us-east-1.amazonaws.com/create";
       let setData = {
         ...formData,
         userId: userEmail,
       }
-      // let data = JSON.stringify({
-      //   "customerName": "Jinal Dave",
-      //   "reservationDate": "2023-05-15",
-      //   "reservationTime": "18:02",
-      //   "numberOfGuests": 1,
-      //   "restaurantid": 1
-      // });
+     
       
       let config = {
         method: 'post',
@@ -250,13 +215,8 @@ let valueDateFinal=moment(value,'HH:mm a').format('HH:mm a')
         data : setData
       };
       
-      // let data = await axios.post(config.url,config.data)
       let data = await axios.post(config.url,config.data,config.headers)
-      // await setDoc(doc(reservationsRef), {
-      //   ...formData,
-      //   userId: userEmail,
-
-      // });
+      
       console.log("data", data)
       messageApi.open({
         type: 'success',
@@ -264,7 +224,7 @@ let valueDateFinal=moment(value,'HH:mm a').format('HH:mm a')
         duration: 6,
         style: { float: "right" }
       });
-      // alert("hi")
+      
 
     }
     setFormData({
@@ -296,7 +256,7 @@ let valueDateFinal=moment(value,'HH:mm a').format('HH:mm a')
     })
     console.log("response",response)
 
-    // if(response?.)
+    
 
     setisShowAddReservation(true)
     setIsEditing(true);
@@ -315,7 +275,7 @@ let valueDateFinal=moment(value,'HH:mm a').format('HH:mm a')
   };
 
   const handleOk = async () => {
-    // let url = "https://nsbbk26x0l.execute-api.us-east-1.amazonaws.com/delete";
+    
     let url="https://3xkugu6ck3.execute-api.us-east-1.amazonaws.com/reservation/deletereservation"
     
     const config = {
@@ -323,7 +283,7 @@ let valueDateFinal=moment(value,'HH:mm a').format('HH:mm a')
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*" // Adding CORS headers
       },
-      data: { // Including the data you want to send as request body
+      data: { 
         "pathParameters": {
           id: DeletereservationsId
         }
@@ -331,7 +291,7 @@ let valueDateFinal=moment(value,'HH:mm a').format('HH:mm a')
     };
   
     try {
-      let response = await axios.post(url, config.data,config.headers); // Using axios.delete() method here
+      let response = await axios.post(url, config.data,config.headers); 
       console.log("data", response.data);
       
       messageApi.open({
@@ -378,14 +338,11 @@ let valueDateFinal=moment(value,'HH:mm a').format('HH:mm a')
 
   return (
     <div className="restaurant-container">
-      {/* <div className=""> */}
+      {}
       {contextHolder}
       <ToastContainer />
-      {/* <Modal title="Confirm" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-        <p>Yes, I want to delete this record.</p>
-
-      </Modal> */}
-      {/* toggle={handleCancel} */}
+      {}
+      {}
       <Modal isOpen={isModalOpen} >
         <ModalHeader >Confirm</ModalHeader>
         <ModalBody>
@@ -397,11 +354,10 @@ let valueDateFinal=moment(value,'HH:mm a').format('HH:mm a')
         </ModalFooter>
 
         {
-          // min={restaurentData?.filter(f => (f.restaurantid == formData.restaurantid))[0].openinghours}
           console.log("hello", restaurentData?.filter(f => (f.restaurantid == formData.restaurantid))[0]?.openinghours?.substring(0, 5))
         }
       </Modal>
-      {/* toggle={handleCancelReservationModal} */}
+      {}
       <Modal isOpen={isShowAddReservation}  >
         <ModalHeader >{isEditing ? "Edit Booking Details" : "Add New Booking Details"}</ModalHeader>
         <ModalBody>
@@ -479,7 +435,7 @@ let valueDateFinal=moment(value,'HH:mm a').format('HH:mm a')
 
           { formData?.restaurantid!="" &&  <div className='col-6' >
                 <label>Reservation Time</label><span className='text-danger' >*</span>
-                {/* <span title={`Opening Time:${ restaurentData?.filter(f => (f.restaurantid == formData.restaurantid))[0]?.openinghours} and Closing Time:${ restaurentData?.filter(f => (f.restaurantid == formData.restaurantid))[0]?.closinghours}` } >test</span> */}
+                {}
                 <input
                   type="time"
                   name="reservationTime"
@@ -518,20 +474,13 @@ let valueDateFinal=moment(value,'HH:mm a').format('HH:mm a')
         </ModalFooter>
       </Modal>
 
-      {/* Reservation Form */}
-
-
-
-      {/* List of Reservations */}
-
+      {}
 
       {}
 
-      {/* <Card>
-        <CardHeader>
-          <h4>Restaurants</h4>
-        </CardHeader>
-      </Card> */}
+      {}
+
+      {}
 
       <Card className='mt-2'>
         <CardHeader>
@@ -599,14 +548,10 @@ let valueDateFinal=moment(value,'HH:mm a').format('HH:mm a')
                       {canEditOrDelete(reservation?.data?.reservationDate, reservation?.data?.reservationTime) && (
                         // {true && (
                         <>
-                          {/* <button className='mx-2' onClick={() => handleEdit(reservation)}>
-                          
-                            Edit
-                            
-                            </button> */}
+                          {}
                           <BiEdit className="mx-2 h5 " style={{ cursor: "pointer" }} onClick={() => handleEdit(reservation)} />
 
-                          {/* <button className='bg-danger' onClick={() => handleDelete(reservation.id)}>Delete</button> */}
+                          {}
                           <AiOutlineDelete className='text-danger h5 cursor-pointer ' style={{ cursor: "pointer" }} onClick={() => handleDelete(reservation?.id)} />
                         </>
                       )}
