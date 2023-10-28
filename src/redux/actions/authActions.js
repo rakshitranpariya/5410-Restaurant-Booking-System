@@ -20,6 +20,7 @@ export const loadUser = () => async dispatch => {
 
     const token = localStorage.getItem('token');
 
+
     if (!token) return dispatch({ type: 'NEW_USER' });
     return true;
   } catch (err) {
@@ -35,6 +36,7 @@ export const googleLogin = () => async dispatch => {
     const searchData = await getDocs(searchQuery);
     if (searchData.docs.length === 0) await dispatch(register({ email: res.user.email }, true));
     await dispatch(loadUser());
+
     return true;
   } catch (err) {
     console.log(err);
@@ -50,6 +52,7 @@ export const getUserByEmail = (email, accessToken) => async dispatch => {
     const res = await getDocs(searchQuery);
     dispatch({ type: 'EXISTING_USER', payload: res.docs[0].data() });
     localStorage.setItem('token', accessToken);
+    localStorage.setItem("userEmail",email)
   } catch (err) {
     console.log(err);
     dispatch({ type: 'AUTH_FAILED' });
@@ -59,22 +62,24 @@ export const getUserByEmail = (email, accessToken) => async dispatch => {
 
 export const register =
   (data, isGoogle = false) =>
-  async () => {
-    try {
-      !isGoogle && (await createUserWithEmailAndPassword(auth, data?.email, data?.password));
-      await addDoc(userCollectionRef, { email: data.email, type: '1' });
-      return true;
-    } catch (e) {
-      console.log(e);
-      return false;
-    }
-  };
+    async () => {
+      try {
+        !isGoogle && (await createUserWithEmailAndPassword(auth, data?.email, data?.password));
+        await addDoc(userCollectionRef, { email: data.email, type: '1' });
+        return true;
+      } catch (e) {
+        console.log(e);
+        return false;
+      }
+    };
 
 export const login = data => async dispatch => {
   try {
     const user = await signInWithEmailAndPassword(auth, data?.email, data?.password);
     dispatch({ type: 'EXISTING_USER', payload: user.user });
     localStorage.setItem('token', user?.user?.accessToken);
+    // localStorage.setItem('userDetails', data?.email);
+    localStorage.setItem('userEmail', data?.email);
 
     return true;
   } catch (err) {

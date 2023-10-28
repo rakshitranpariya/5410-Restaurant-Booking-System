@@ -5,6 +5,7 @@
   "dependencies": {
     "@ant-design/compatible": "^5.1.1",
     "@ant-design/icons": "^5.1.0",
+    "@kommunicate/kommunicate-chatbot-plugin": "^0.0.7",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -34,6 +35,7 @@
     "react-facebook-login": "^4.1.1",
     "react-google-button": "^0.7.2",
     "react-google-login": "^5.2.2",
+    "react-icons": "^4.11.0",
     "react-image-lightbox": "^5.1.4",
     "react-moment": "^1.1.3",
     "react-redux": "^8.0.5",
@@ -42,6 +44,8 @@
     "react-scripts": "5.0.1",
     "react-social-login": "^3.4.17",
     "react-social-login-buttons": "^3.9.1",
+    "react-toastify": "^9.1.3",
+    "reactstrap": "^9.2.0",
     "redux": "^4.2.1",
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.4.2",
@@ -51,7 +55,7 @@
   },
   "homepage": ".",
   "scripts": {
-    "dev": "react-scripts start",
+    "dev": "react-scripts start ",
     "build": "react-scripts build",
     "start": "serve -s build",
     "test": "react-scripts test",
