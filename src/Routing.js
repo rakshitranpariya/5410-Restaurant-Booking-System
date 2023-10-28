@@ -40,6 +40,9 @@ const Routing = () => {
       path: '/change-password/:id/:token',
       component: <ChangePassword />,
     },
+  ].filter(cur => cur);
+
+  const PrivateRoutes = [
     {
       path: '/restaurantListing',
       component: <RestaurantListing />,
@@ -48,9 +51,6 @@ const Routing = () => {
       path: '/menu/:restaurantId',
       component: <MenuPage />,
     },
-  ].filter(cur => cur);
-
-  const PrivateRoutes = [
     {
       path: '/restaurants',
       component: <Restaurant />,
@@ -64,7 +64,7 @@ const Routing = () => {
 
   const PublicRoute = ({ children }) => {
     console.log('after register', isAuthenticated);
-    if (isAuthenticated) navigate('/restaurants', { replace: true });
+    if (isAuthenticated) navigate('/restaurantListing', { replace: true });
     return isAuthenticated ? <Restaurant /> : children;
   };
 

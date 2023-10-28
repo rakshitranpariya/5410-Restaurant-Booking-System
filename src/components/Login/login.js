@@ -54,7 +54,7 @@ const Login = () => {
     setLoading(true);
     if (validator.allValid()) {
       await dispatch(login(fields));
-      await dispatch(handleSidebarChange('/restaurants'));
+      await dispatch(handleSidebarChange('/restaurantListing'));
       setLoading(false);
       navigate('/restaurantListing');
     } else {
