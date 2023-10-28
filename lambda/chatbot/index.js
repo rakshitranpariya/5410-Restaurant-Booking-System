@@ -1,7 +1,8 @@
 import https from 'https';
 
 export const handler = async (event) => {
-  let data;
+  let data = null;
+  let restaurantName = null;
   try {
     console.log("Received event:");
     console.log(JSON.stringify(event, null, 2));
@@ -25,42 +26,73 @@ export const handler = async (event) => {
       if (selectedIntent) {
         console.log(selectedIntent);
         switch (selectedIntent) {
+          case "inintChat":
+            const responseMessage = `How can I assist you?`;
+            return createGetRestaurantInfoResponse(selectedIntent, responseMessage, null);
+
           // Handle the "GetAllRestaurants" intent
           case "restaurantsList":
 
             const apiUrl = 'https://l1j6zvbe7c.execute-api.us-east-1.amazonaws.com/restaurantlist';
 
-            data = await fetchDataFromAPI(apiUrl);
-            console.log("DATA:::>>>>", data);
-            const parsedData = JSON.parse(data);
+            const response = await fetchDataFromAPI(apiUrl);
+            data = JSON.parse(response);
             const restaurantsList = [];
-              for (const item of parsedData) {
-                if (item.name) {
-                  restaurantsList.push(item.name);
+            for (const item of data) {
+              if (item.name) {
+                restaurantsList.push(item.name);
+              }
+            }
+
+            return createRestaurantsListResponse(selectedIntent, restaurantsList, data, true);
+
+          // Handle the "getRestaurantInfo" intent  
+          case "getRestaurantInfo":
+            console.log("-------------------------------GET INFO INVOKED");
+            const restaurantName = event.inputTranscript; // Use the user's input text
+            console.log("restaurantName>>>>", restaurantName);
+            if (restaurantName) {
+              let selectedRestaurant = null;
+              for (const item of data) {
+                if (item.name && item.name.toLowerCase() === restaurantName.toLowerCase()) {
+                  selectedRestaurant = item.name;
+                  break; // Exit the loop when a matching restaurant is found
                 }
               }
 
-            return createRestaurantsListResponse(selectedIntent, restaurantsList, data, true);
-            
-          // Handle the "getRestaurantInfo" intent  
-          case "getRestaurantInfo":
-            console.log("-------------------------------GET INFO IVOKED")
-            const restaurantName = event.inputTranscript; // Use the user's input text
-            console.log("restaurantName>>>>", restaurantName);
+              if (selectedRestaurant) {
+                const responseMessage = `What information do you need for ${restaurantName}`;
+                return createGetRestaurantInfoResponse(selectedIntent, responseMessage, data);
+              } else {
+                // Handle the case where the restaurant was not found
+                return createGetRestaurantInfoResponse(
+                  selectedIntent,
+                  "I couldn't find information for that restaurant.",
+                  data
+                );
+              }
+            }
 
-            // Find the restaurant in the parsed data
-             const selectedRestaurant = parsedData.find(
-               item => item.name && item.name.toLowerCase() === restaurantName.toLowerCase()
-             );
+          case "getLocation":
 
-             if (selectedRestaurant) {
-               // Create a response with restaurant details
-               const responseMessage = `Here is the information about`;
+            let location = null;
+            for (const item of data) {
+              if (item.name && item.name.toLowerCase() === restaurantName.toLowerCase()) {
+                location = item.city;
+                break; // Exit the loop when a matching restaurant is found
+              }
+            }
 
-               return createGetRestaurantInfoResponse(selectedIntent, responseMessage, data);
-             } else {
-            // Handle the case where the restaurant was not found
-              return createGetRestaurantInfoResponse(selectedIntent, "I couldn't find information for that restaurant.", data);
+            if (location) {
+              const responseMessage = `The location for ${restaurantName} is in ${location}.`;
+              return createGetRestaurantInfoResponse(selectedIntent, responseMessage, data);
+            } else {
+              // Handle the case where the restaurant was not found
+              return createGetRestaurantInfoResponse(
+                selectedIntent,
+                "I couldn't find the location for that restaurant.",
+                data
+              );
             }
           default:
             // Handle unknown or unsupported intents
@@ -109,9 +141,9 @@ function createRestaurantsListResponse(intentName, restaurantsList, data, invoke
     // If you want to invoke another intent, add it to the messages array
     messages.push({
       contentType: "PlainText",
-      content: "For which restaurant can I help you?"
+      content: "For what can I help you?"
     });
-    
+
     // Add the name of the intent you want to invoke
     intentName = "getRestaurantInfo"; // Replace with the actual intent name
   }
@@ -134,7 +166,7 @@ function createRestaurantsListResponse(intentName, restaurantsList, data, invoke
 }
 
 function createGetRestaurantInfoResponse(intentName, responseMessage, data) {
-return {
+  return {
     sessionState: {
       dialogAction: {
         type: "Close",
