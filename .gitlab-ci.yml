@@ -4,15 +4,15 @@ stages:
   - deploy
 
 variables:
-  NETLIFY_SITE_ID: "c3481d27-48b7-4a69-bc93-d49180796a0d"
-  NETLIFY_AUTH_TOKEN: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDluNNAi18gRiFc7eQnum2GPrvbIHdTrwsAgQAUfyha4X8ZLSgq4mD2qgvrIZ+Jp4p7kuM89PA2IranUh/cCLfWi20M70fIpGttnGxSjWM5MubUA6VgK+vIF2mc0phxLQU+m2qLwFXYrKOoJswzqtvYKe6Z/aNXPzXAPwaRJoraRtvqWu1fd10/UdztxyduWa+JMRl74Bh6QF15xR1QMomfKzFdpYwLuASTKcHnHYRGHlZc8WJ1/mJemKK7vn2XPOCUwqc3LAdudWhpFyOXojXjyc8V7Pkd7rMOnlMhtOSSFPDdaL6MBM8efnYkagcNU/jRNV92UkKyyHBSzEWGJmsGntJGvsjzzb58Vmx25rL/Usc7xVVEpLDHDIlg/+65DvS7kc85UoX28DvnBSQiO2IOmEFrtEqR5vwJwobWBIVIhzgd3XP8BiXRBs/g2QhKUcCoZB0mKcQmRfoj1pC5OU2u0tiL+khRZszYDcbkJnBuBLsR6KksRbORbYe8c4zS1rqHJ8MzBYjNruKxaZEqf5E83WPvRPSgmCgf9GWu5YPAUDurJHR9nChIj0w1RZGGfug08XOrfzarVT91AG80a6wCWDESIG0mNqKbWP4Ap8S1rALTkCCwc0p7lOjvD7eGaQpt46Ctxz656Fm0aG3wiJs1xVd3dD9V9nqOrPyLl3+6bQ=="
+  NETLIFY_SITE_ID: "ccdffe82-0843-446f-857b-9f9fff882352"
+  NETLIFY_AUTH_TOKEN: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDA2Lh3ejbnm3v42RitQ6FIbeHVHrLRGhBrJhDrDA0NZnkyBz2/Rj6kimi3Xq9c4pD0cZZHzwaW1x16EawLoaRe25d+qCDxIOQGwqUp6yNyvxhrnkOAzm+LrMn82HH8tYp5LTQ5RlOg5sO7lQgn7QOSPLDCavnOSsacltj/k4NkKFBcw1ncxNNPI1a0fewXBCF8T3PkuRFNprJtuCL+3fhw6P4keEoUHwEbxGwkU60jf4DDpuq8uq8rtxvyjTCW+KZwlpPvMdR+o9tI3UICttMkkAj2XL+6/rfRfgReG8UZgltf4Cogf1SwU0tAsW4ddoEgSynpaapeYTKA9qezuRoCw6DXvlE97jD64sLmYn3AZRxV3pUsGwMe+Kb1CCu9EktyDKbhvvKLP31dIXeEEUbHfRx86KUa0OL8QyYrfWkDhHHlWcEop+M7PRUjUPjuZ6bWOgxD62Pgjx6IHiHsZiShWvMIFqqdsqwYF6cprmAs6Iu4x6mxlys7PcegdVF9zZKdsHqvwYfDmzPjS8sjxBQj8Vq3mY/16+xhPlumEOPIbMofACEpDES+E8OCtDZyhM/MBWgQyTjkajdd93Zcj4uhNYjkNqR+SJ60nKE33mROUaBO74aITse7/JT56o42/xIhGuXAD6N7QbAyryNBUxXPkfvQscoTMSiXuasYoU2Syw=="
 
-build:
-  stage: build
-  image: node:18.13.0
-  script:
-    - npx yarn
-    - npx yarn build
+# build:
+#   stage: build
+#   image: node:18.13.0
+#   script:
+#     - npx yarn
+#     - npx yarn build
 
 deploy:
   stage: deploy
