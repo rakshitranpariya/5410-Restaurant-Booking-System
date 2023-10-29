@@ -1,0 +1,30 @@
+stages:
+  - test
+  - build
+  - deploy
+
+variables:
+  NETLIFY_SITE_ID: "c3481d27-48b7-4a69-bc93-d49180796a0d"
+  NETLIFY_AUTH_TOKEN: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDluNNAi18gRiFc7eQnum2GPrvbIHdTrwsAgQAUfyha4X8ZLSgq4mD2qgvrIZ+Jp4p7kuM89PA2IranUh/cCLfWi20M70fIpGttnGxSjWM5MubUA6VgK+vIF2mc0phxLQU+m2qLwFXYrKOoJswzqtvYKe6Z/aNXPzXAPwaRJoraRtvqWu1fd10/UdztxyduWa+JMRl74Bh6QF15xR1QMomfKzFdpYwLuASTKcHnHYRGHlZc8WJ1/mJemKK7vn2XPOCUwqc3LAdudWhpFyOXojXjyc8V7Pkd7rMOnlMhtOSSFPDdaL6MBM8efnYkagcNU/jRNV92UkKyyHBSzEWGJmsGntJGvsjzzb58Vmx25rL/Usc7xVVEpLDHDIlg/+65DvS7kc85UoX28DvnBSQiO2IOmEFrtEqR5vwJwobWBIVIhzgd3XP8BiXRBs/g2QhKUcCoZB0mKcQmRfoj1pC5OU2u0tiL+khRZszYDcbkJnBuBLsR6KksRbORbYe8c4zS1rqHJ8MzBYjNruKxaZEqf5E83WPvRPSgmCgf9GWu5YPAUDurJHR9nChIj0w1RZGGfug08XOrfzarVT91AG80a6wCWDESIG0mNqKbWP4Ap8S1rALTkCCwc0p7lOjvD7eGaQpt46Ctxz656Fm0aG3wiJs1xVd3dD9V9nqOrPyLl3+6bQ=="
+
+test:
+  stage: test
+  image: node:18.13.0
+  script:
+    - npx yarn
+    - npx yarn test
+
+build:
+  stage: build
+  image: node:18.13.0
+  script:
+    - npx yarn
+    - npx yarn build
+
+deploy:
+  stage: deploy
+  image: node:18.13.0
+  script:
+    - npx yarn global add netlify-cli
+    - netlify login -t $NETLIFY_AUTH_TOKEN
+    - netlify deploy --site $NETLIFY_SITE_ID --prod --dir build
