@@ -5,6 +5,7 @@ import Routing from './Routing';
 import store from './redux/store';
 import { loadUser } from './redux/actions/authActions';
 import Loader from './shared/loader';
+import KommunicateChat from './shared/chat'
 
 const App = () => {
   const [isLoaded, setLoaded] = useState(false);
@@ -23,7 +24,9 @@ const App = () => {
     <Provider store={store}>
       <BrowserRouter>
         <Routing />
+        
       </BrowserRouter>
+      <KommunicateChat/>
     </Provider>
   );
 };
