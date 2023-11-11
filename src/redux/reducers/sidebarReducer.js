@@ -11,12 +11,14 @@ const initialState = {
       label: 'Restaurants',
       icon: <UserOutlined />,
       url: '/restaurants',
+      type: '1',
     },
     {
       key: '/logout',
       label: 'Logout',
       icon: <LogoutOutlined />,
       url: '/login',
+      type: 'all',
     },
   ],
 };

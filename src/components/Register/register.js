@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Form, Input, Layout, theme } from 'antd';
+import { Button, Form, Input, Layout, Radio, theme } from 'antd';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import GoogleButton from 'react-google-button';
@@ -23,6 +23,7 @@ const Register = () => {
     email: null,
     password: null,
     confirmPassword: null,
+    type: null,
   });
 
   const [validator, setValidator] = useSimpleReactValidator(
@@ -48,6 +49,14 @@ const Register = () => {
       ...prev,
       [field]: e.target.value,
     }));
+  };
+
+  const handleGoogleLogin = async () => {
+    if (validator.fieldValid('Type')) await dispatch(googleLogin(fields));
+    else {
+      validator.getErrorMessages();
+      setValidator(true);
+    }
   };
 
   const handleSubmit = async () => {
@@ -162,6 +171,22 @@ const Register = () => {
                   )}{' '}
                 </div>
               </Form.Item>
+              <Form.Item
+                label={
+                  <span className="label">
+                    <span className="required-asterisk">*</span> Account Type{' '}
+                  </span>
+                }
+              >
+                <Radio.Group onChange={e => handleChange(e, 'type')} value={fields.type}>
+                  <Radio value={1}>User</Radio>
+                  <Radio value={2}>Restaurant Owner</Radio>
+                </Radio.Group>
+                <div className={validator.errorMessages.type ? 'error-message' : ''}>
+                  {' '}
+                  {validator.message('Type', fields.type, 'required')}{' '}
+                </div>
+              </Form.Item>
               <Form.Item>
                 <div style={{ display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
                   <div>
@@ -204,7 +229,7 @@ const Register = () => {
                   className="google"
                   label="Sign Up with Google"
                   style={{ width: '100%' }}
-                  onClick={async () => await dispatch(googleLogin())}
+                  onClick={() => handleGoogleLogin()}
                 />
               </Form.Item>
             </Form>

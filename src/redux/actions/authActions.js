@@ -28,12 +28,14 @@ export const loadUser = () => async dispatch => {
   }
 };
 
-export const googleLogin = () => async dispatch => {
+export const googleLogin = field => async dispatch => {
   try {
+    console.log(field.type);
     const res = await signInWithPopup(auth, provider);
     const searchQuery = await query(userCollectionRef, where('email', '==', res.user.email));
     const searchData = await getDocs(searchQuery);
-    if (searchData.docs.length === 0) await dispatch(register({ email: res.user.email }, true));
+    if (searchData.docs.length === 0)
+      await dispatch(register({ email: res.user.email, type: field.type }, true));
     await dispatch(loadUser());
     return true;
   } catch (err) {
@@ -48,7 +50,12 @@ export const getUserByEmail = (email, accessToken) => async dispatch => {
     const searchQuery = await query(userCollectionRef, where('email', '==', email));
 
     const res = await getDocs(searchQuery);
-    dispatch({ type: 'EXISTING_USER', payload: res.docs[0].data() });
+    const payloadData = {
+      id: res.docs[0].id,
+      email: res.docs[0].data().email,
+      type: res.docs[0].data().type,
+    };
+    dispatch({ type: 'EXISTING_USER', payload: payloadData });
     localStorage.setItem('token', accessToken);
   } catch (err) {
     console.log(err);

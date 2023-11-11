@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layout, Menu, Divider, Tooltip } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -14,6 +14,13 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isCollapsed, activatedSidebarKey, sidebarData } = useSelector(state => state.sidebar);
+  const { user } = useSelector(state => state.auth);
+  const [updatedSidebar, setUpdatedSidebar] = useState([]);
+
+  useEffect(() => {
+    const temp = sidebarData.filter(cur => cur.type === 'all' || cur.type === user.type);
+    setUpdatedSidebar(temp);
+  }, [sidebarData]);
 
   const changeSidebar = async e => {
     try {
@@ -52,19 +59,23 @@ const Sidebar = () => {
         </Item>
 
         <Divider className="sidebar-divider" />
-        {sidebarData.map(e => (
-          <Item key={e.key} onClick={() => changeSidebar(e)} className="menu-item-wrapper">
-            {isCollapsed ? (
-              <Tooltip placement="right" title={<span className="menu-item-text">{e.label}</span>}>
-                <span className="menu-item-text">{e.icon}</span>
-              </Tooltip>
-            ) : (
-              <span className="menu-item-text">
-                {e.icon} {e.label}
-              </span>
-            )}
-          </Item>
-        ))}
+        {updatedSidebar.length > 0 &&
+          updatedSidebar.map(e => (
+            <Item key={e.key} onClick={() => changeSidebar(e)} className="menu-item-wrapper">
+              {isCollapsed ? (
+                <Tooltip
+                  placement="right"
+                  title={<span className="menu-item-text">{e.label}</span>}
+                >
+                  <span className="menu-item-text">{e.icon}</span>
+                </Tooltip>
+              ) : (
+                <span className="menu-item-text">
+                  {e.icon} {e.label}
+                </span>
+              )}
+            </Item>
+          ))}
       </Menu>
     </Sider>
   );

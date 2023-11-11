@@ -42,6 +42,7 @@ const Routing = () => {
     {
       path: '/restaurants',
       component: <Restaurant />,
+      type: '1',
     },
   ].filter(cur => cur);
 
