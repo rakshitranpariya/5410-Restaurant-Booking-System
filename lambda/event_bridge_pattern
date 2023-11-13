@@ -1,8 +1,21 @@
 {
   "source": "aws.events",
   "detail-type": "Scheduled Event",
-  "resources": ["arn:aws:events:us-east-1:123456789012:rule/my-scheduled-rule"],
+  "resources": ["arn:aws:events:us-east-1:837492615810:rule/my-scheduled-rule"],
   "detail": {
     "schedule-expression": "cron(0 * * * *)"
   }
 }
+
+
+----------------
+
+{
+    "source": "aws.events",
+    "detail-type": "Scheduled Event",
+    "resources": ["arn:aws:events:us-east-1:524136978205:rule/rest-opeining-scheduled-rule"],
+    "detail": {
+      "schedule-expression": "cron(0 9-22 * * ?)"
+    }
+  }
+  
