@@ -72,7 +72,7 @@ const Restaurant = () => {
   };
 
   const getResturenrData = async () => {
-    let url = "https://l1j6zvbe7c.execute-api.us-east-1.amazonaws.com/restaurantlist"
+    let url = "https://l1j6zvbe7c.execute-api.us-east-1.amazonaws.com/5410-project-getRestaurantDetails"
     let data = await axios.get(url)
     let response = data?.data
     setRestaurentData(response)
