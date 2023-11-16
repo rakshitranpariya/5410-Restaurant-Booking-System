@@ -14,10 +14,11 @@ const RestaurantListing = lazy(() =>
   import('./components/RestaurantListing/P_RestaurantListingPage')
 );
 const MenuPage = lazy(() => import('./components/MenuListing/P_MenulistingPage'));
+const ReservationListing = lazy(() => import('./components/ReservationListing/reservationListing'));
 const { Content } = Layout;
 
 const Routing = () => {
-  const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
+  const { isAuthenticated, user } = useSelector(state => state.auth);
   const navigate = useNavigate();
   const PublicRoutes = [
     {
@@ -46,17 +47,24 @@ const Routing = () => {
     {
       path: '/restaurantListing',
       component: <RestaurantListing />,
+      type: '1',
     },
     {
       path: '/menu/:restaurantId',
       component: <MenuPage />,
+      type: '1',
     },
     {
       path: '/restaurants',
       component: <Restaurant />,
       type: '1',
     },
-  ].filter(cur => cur);
+    {
+      path: '/reservationListing',
+      component: <ReservationListing />,
+      type: '2',
+    },
+  ].filter(cur => cur && cur.type === user.type);
 
   const PrivateRoute = ({ children }) => {
     if (!isAuthenticated) navigate('/login', { replace: true });
@@ -64,14 +72,17 @@ const Routing = () => {
   };
 
   const PublicRoute = ({ children }) => {
-    console.log('after register', isAuthenticated);
-    if (isAuthenticated) navigate('/restaurantListing', { replace: true });
+    if (isAuthenticated)
+      user.type === '1'
+        ? navigate('/restaurantListing', { replace: true })
+        : navigate('/reservationListing', { replace: true });
     return isAuthenticated ? <Restaurant /> : children;
   };
 
   return (
     <Suspense className="loader" fallback={<Loader />}>
       <Layout style={{ minHeight: '100vh', display: 'flex' }}>
+        {console.log(isAuthenticated)}
         {isAuthenticated && <Sidebar style={{ backgroundColor: '#f0f0f0' }} />}
         <Routes>
           {PublicRoutes.map(route => (

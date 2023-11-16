@@ -14,6 +14,13 @@ const initialState = {
       type: '1',
     },
     {
+      key: '/reservationListing',
+      label: 'Reservations',
+      icon: <UserOutlined />,
+      url: '/reservationListing',
+      type: '2',
+    },
+    {
       key: '/logout',
       label: 'Logout',
       icon: <LogoutOutlined />,

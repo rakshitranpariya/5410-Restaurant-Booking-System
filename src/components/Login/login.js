@@ -52,8 +52,13 @@ const Login = () => {
   };
 
   const handleGoogleLogin = async () => {
-    if (validator.fieldValid('Type')) await dispatch(googleLogin(fields));
-    else {
+    if (validator.fieldValid('Type')) {
+      await dispatch(googleLogin(fields));
+      fields.type === '1'
+        ? await dispatch(handleSidebarChange('/restaurantListing'))
+        : await dispatch(handleSidebarChange('/reservationListing'));
+      fields.type === '1' ? navigate('/restaurantListing') : navigate('/reservationListing');
+    } else {
       validator.showMessageFor('Type');
       setValidator(true);
     }
@@ -62,10 +67,18 @@ const Login = () => {
   const handleSubmit = async () => {
     setLoading(true);
     if (validator.allValid()) {
-      await dispatch(login(fields));
-      await dispatch(handleSidebarChange('/restaurantListing'));
-      setLoading(false);
-      navigate('/restaurantListing');
+      try {
+        const res = await dispatch(login(fields));
+        if (res) {
+          await dispatch(handleSidebarChange('/restaurantListing'));
+          setLoading(false);
+          fields.type === '1' ? navigate('/restaurantListing') : navigate('/reservationListing');
+        } else {
+          throw new Error('Login Failed');
+        }
+      } catch (err) {
+        setLoading(false);
+      }
     } else {
       setLoading(false);
       validator.getErrorMessages();
