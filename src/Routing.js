@@ -64,7 +64,7 @@ const Routing = () => {
       component: <ReservationListing />,
       type: '2',
     },
-  ].filter(cur => cur && cur.type === user.type);
+  ].filter(cur => cur && cur?.type?.toString() === user?.type?.toString());
 
   const PrivateRoute = ({ children }) => {
     if (!isAuthenticated) navigate('/login', { replace: true });
@@ -76,13 +76,12 @@ const Routing = () => {
       user.type === '1'
         ? navigate('/restaurantListing', { replace: true })
         : navigate('/reservationListing', { replace: true });
-    return isAuthenticated ? <Restaurant /> : children;
+    return isAuthenticated ? user.type === '1' ? <Restaurant /> : <ReservationListing /> : children;
   };
 
   return (
     <Suspense className="loader" fallback={<Loader />}>
       <Layout style={{ minHeight: '100vh', display: 'flex' }}>
-        {console.log(isAuthenticated)}
         {isAuthenticated && <Sidebar style={{ backgroundColor: '#f0f0f0' }} />}
         <Routes>
           {PublicRoutes.map(route => (

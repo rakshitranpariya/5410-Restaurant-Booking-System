@@ -31,15 +31,31 @@ const data = [
   },
 ];
 
+const columns = [
+  {
+    title: 'Name',
+    dataIndex: 'firstName',
+    key: 'firstName',
+  },
+  {
+    title: 'Age',
+    dataIndex: 'age',
+    key: 'age',
+  },
+  {
+    title: 'Address',
+    dataIndex: 'address',
+    key: 'address',
+  },
+  {},
+];
+
 const ReservationListing = () => {
   return (
-    <Layout>
-      <Content>
+    <Layout style={{ flex: 1, overflow: 'hidden' }}>
+      <Content style={{ padding: '24px', overflow: 'auto' }}>
         <Table dataSource={data}>
-          <ColumnGroup title="Name">
-            <Column title="First Name" dataIndex="firstName" key="firstName" />
-            <Column title="Last Name" dataIndex="lastName" key="lastName" />
-          </ColumnGroup>
+          <Column title="First Name" dataIndex="firstName" key="firstName" />
           <Column title="Age" dataIndex="age" key="age" />
           <Column title="Address" dataIndex="address" key="address" />
           <Column
