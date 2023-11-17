@@ -14,6 +14,7 @@ const RestaurantListing = lazy(() =>
 );
 const MenuPage = lazy(() => import('./components/MenuListing/P_MenulistingPage'));
 const ReservationListing = lazy(() => import('./components/ReservationListing/reservationListing'));
+const PageNotFound = lazy(() => import('./shared/404'));
 const { Content } = Layout;
 
 const Routing = () => {
@@ -99,6 +100,7 @@ const Routing = () => {
               element={<PrivateRoute>{route.component}</PrivateRoute>}
             />
           ))}
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Layout>
     </Suspense>
