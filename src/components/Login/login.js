@@ -56,10 +56,12 @@ const Login = () => {
       if (validator.fieldValid('Type')) {
         const res = await dispatch(googleLogin(fields));
         if (res) {
-          fields.type === '1'
+          fields.type.toString() === '1'
             ? await dispatch(handleSidebarChange('/restaurantListing'))
             : await dispatch(handleSidebarChange('/reservationListing'));
-          fields.type === '1' ? navigate('/restaurantListing') : navigate('/reservationListing');
+          fields.type.toString() === '1'
+            ? navigate('/restaurantListing')
+            : navigate('/reservationListing');
         } else {
           throw new Error('login failed');
         }
@@ -80,7 +82,9 @@ const Login = () => {
         if (res) {
           await dispatch(handleSidebarChange('/restaurantListing'));
           setLoading(false);
-          fields.type === '1' ? navigate('/restaurantListing') : navigate('/reservationListing');
+          fields.type.toString() === '1'
+            ? navigate('/restaurantListing')
+            : navigate('/reservationListing');
         } else {
           throw new Error('Login Failed');
         }

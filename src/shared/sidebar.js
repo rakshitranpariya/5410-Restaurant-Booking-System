@@ -18,7 +18,11 @@ const Sidebar = () => {
   const [updatedSidebar, setUpdatedSidebar] = useState([]);
 
   useEffect(() => {
-    const temp = sidebarData.filter(cur => cur.type === 'all' || cur.type === user.type.toString());
+    console.log(sidebarData, user);
+    const temp = sidebarData.filter(
+      cur => cur.type === 'all' || cur.type === user?.type?.toString()
+    );
+    console.log(temp);
     setUpdatedSidebar(temp);
   }, [sidebarData]);
 

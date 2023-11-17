@@ -94,9 +94,8 @@ export const register =
 export const login = data => async dispatch => {
   try {
     const user = await signInWithEmailAndPassword(auth, data?.email, data?.password);
-    dispatch({ type: 'EXISTING_USER', payload: user.user });
-    localStorage.setItem('token', user?.user?.accessToken);
-    // localStorage.setItem('userDetails', data?.email);
+    console.log(user);
+    await dispatch(getUserByEmail(user?.user?.email, user?.user?.accessToken));
     localStorage.setItem('userEmail', data?.email);
 
     return true;
