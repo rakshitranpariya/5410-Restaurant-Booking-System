@@ -52,24 +52,35 @@ const Register = () => {
   };
 
   const handleGoogleLogin = async () => {
-    if (validator.fieldValid('Type')) await dispatch(googleLogin(fields));
-    else {
-      validator.getErrorMessages();
-      setValidator(true);
+    try {
+      if (validator.fieldValid('Type')) {
+        await dispatch(googleLogin(fields));
+      } else {
+        validator.getErrorMessages();
+        setValidator(true);
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
   const handleSubmit = async () => {
-    setLoading(true);
-    if (validator.allValid()) {
-      await dispatch(register(fields));
-      console.log('register');
-      setLoading(false);
-      navigate('/login');
-    } else {
-      setLoading(false);
-      validator.getErrorMessages();
-      setValidator(true);
+    try {
+      setLoading(true);
+      if (validator.allValid()) {
+        const res = await dispatch(register(fields));
+        if (res) {
+          console.log('register');
+          setLoading(false);
+          navigate('/login');
+        } else throw new Error('failed');
+      } else {
+        setLoading(false);
+        validator.getErrorMessages();
+        setValidator(true);
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -188,13 +199,6 @@ const Register = () => {
                 </div>
               </Form.Item>
               <Form.Item>
-                <div style={{ display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
-                  <div>
-                    <Form.Item>
-                      <a href="/forgot-password">Forgot Password?</a>
-                    </Form.Item>
-                  </div>
-                </div>
                 <div
                   style={{
                     display: 'flex',
