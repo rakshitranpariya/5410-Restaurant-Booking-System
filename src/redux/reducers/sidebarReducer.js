@@ -7,6 +7,13 @@ const initialState = {
   },
   sidebarData: [
     {
+      key: '/dashboard',
+      label: 'Dashboard',
+      icon: <UserOutlined />,
+      url: '/dashboard',
+      type: '2',
+    },
+    {
       key: '/restaurants',
       label: 'Restaurants',
       icon: <UserOutlined />,

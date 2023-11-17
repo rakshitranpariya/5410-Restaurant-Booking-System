@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { Layout } from 'antd';
 import Loader from './shared/loader';
 
+const Dashboard = lazy(() => import('./components/Dashboard/dashboard'));
 const Sidebar = lazy(() => import('./shared/sidebar'));
 const Login = lazy(() => import('./components/Login/login'));
 const Restaurant = lazy(() => import('./components/Restaurant/restaurant'));
@@ -19,6 +20,7 @@ const { Content } = Layout;
 
 const Routing = () => {
   const { isAuthenticated, user } = useSelector(state => state.auth);
+  // console.log("user",user)
   const navigate = useNavigate();
   const PublicRoutes = [
     {
@@ -64,7 +66,14 @@ const Routing = () => {
       component: <ReservationListing />,
       type: '2',
     },
-  ].filter(cur => cur && cur?.type?.toString() === user?.type?.toString());
+    {
+      path: '/dashboard',
+      component: <Dashboard />,
+      type:'2'
+
+
+    },
+  ].filter(cur => cur && String(cur.type) == String(user.type));
 
   const PrivateRoute = ({ children }) => {
     if (!isAuthenticated) navigate('/login', { replace: true });
