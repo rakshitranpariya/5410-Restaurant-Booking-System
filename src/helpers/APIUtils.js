@@ -114,7 +114,7 @@ class ApiUtils {
   addRestaurant = data =>
     this.axios({
       method: 'POST',
-      url: 'https://l1j6zvbe7c.execute-api.us-east-1.amazonaws.com/5410-project-insertRestaurantKeys',
+      url: 'https://vzgth5nw0m.execute-api.us-east-1.amazonaws.com/prod/restaurant',
       data,
     });
 }
