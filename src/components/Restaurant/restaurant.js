@@ -56,10 +56,12 @@ const Restaurant = () => {
 
       let url = "https://nsbbk26x0l.execute-api.us-east-1.amazonaws.com/getall"
 
+      // let url = "https://nsbbk26x0l.execute-api.us-east-1.amazonaws.com/getchartdata"
+
       let data = await axios.get(url)
-      
+
       let filterData = data?.data.filter((f) => f.data.userId == userEmail)
-      
+
 
       setReservations(filterData)
       setLoading(false)
@@ -72,6 +74,7 @@ const Restaurant = () => {
   };
 
   const getResturenrData = async () => {
+    // let url = "https://l1j6zvbe7c.execute-api.us-east-1.amazonaws.com/restaurantlist"
     let url = "https://l1j6zvbe7c.execute-api.us-east-1.amazonaws.com/5410-project-getRestaurantDetails"
     let data = await axios.get(url)
     let response = data?.data
@@ -121,7 +124,7 @@ const Restaurant = () => {
       }
 
     } catch (error) {
-      
+
       setMenuItemsOptions([])
 
       setLoading(false)
@@ -147,11 +150,11 @@ const Restaurant = () => {
     const { name, value } = event.target;
     if (name == "reservationTime") {
 
-      const minDate = restaurentData?.filter(f => (f.restaurantid == formData.restaurantid))[0]?.openinghours
+      const minDate = restaurentData?.filter(f => (f.id == formData.restaurantid))[0]?.openingHours
       const minTime = new Date(`20-10-2023T${minDate}`);
       const getValue = new Date(`20-10-2023T${value}`)
 
-      const maxDate = restaurentData?.filter(f => (f.restaurantid == formData.restaurantid))[0]?.closinghours
+      const maxDate = restaurentData?.filter(f => (f.id == formData.restaurantid))[0]?.closingHours
       const maxTime = new Date(`${formData.reservationDate}T${maxDate}`);
       const currenttime = new Date(`${formData.reservationDate}T${value}`);
 
@@ -254,7 +257,8 @@ const Restaurant = () => {
         let config = {
           method: 'post',
           maxBodyLength: Infinity,
-          url: 'https://3xkugu6ck3.execute-api.us-east-1.amazonaws.com/reservation/createreservation',
+          // url: 'https://3xkugu6ck3.execute-api.us-east-1.amazonaws.com/reservation/createreservation',
+          // url: 'https://3xkugu6ck3.execute-api.us-east-1.amazonaws.com/reservation/createreservation',
           headers: {
             'Content-Type': 'application/json'
           },
@@ -276,7 +280,7 @@ const Restaurant = () => {
 
       } else {
 
-      
+
         let setData = {
           ...formData,
           userId: userEmail,
@@ -288,8 +292,15 @@ const Restaurant = () => {
           method: 'post',
           maxBodyLength: Infinity,
           url: 'https://3xkugu6ck3.execute-api.us-east-1.amazonaws.com/reservation/createreservation',
+          // url: 'https://3xkugu6ck3.execute-api.us-east-1.amazonaws.com/Holistic/createreservation',
+          // url: "https://3xkugu6ck3.execute-api.us-east-1.amazonaws.com/Holistic/getHolisticChartData",
+          // url: "https://nsbbk26x0l.execute-api.us-east-1.amazonaws.com/getchartdata",
+          // url: "https://dzbx9ilhx3.execute-api.us-east-1.amazonaws.com/chartdata",
+
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            "Access-Control-Allow-Origin": "*"
+
           },
           data: setData
         };
@@ -307,12 +318,14 @@ const Restaurant = () => {
 
 
       }
-   
+
 
       handleCancelReservationModal()
       fetchData();
 
     } catch (error) {
+      setLoading(false)
+
       toast.error("Something went wrong!")
     }
 
@@ -326,14 +339,14 @@ const Restaurant = () => {
     try {
 
       setLoading(true)
-     
+
       setMenuItemsOptions([])
       setSelectedMenuItems([])
 
       setFormData(reservation?.data);
       setNewFormData(reservation?.data)
 
-      
+
       setisShowAddReservation(true)
       setIsEditing(true);
       setCurrentEditId(reservation?.id);
@@ -345,6 +358,7 @@ const Restaurant = () => {
 
     } catch (error) {
       toast.error("Somthing went wrong!")
+      setLoading(false)
     }
 
 
@@ -382,7 +396,7 @@ const Restaurant = () => {
       setIsModalOpen(false);
       SetDeletereservationsId(null);
       fetchData();
-      setLoading(false)
+      // setLoading(false)
 
     } catch (error) {
       setLoading(false)
@@ -446,7 +460,7 @@ const Restaurant = () => {
       restaurantid: "",
       menuitemid: [],
     })
-    
+
     setSelectedMenuItems([])
     setMenuItemsOptions([])
     setNewFormData({})
@@ -507,7 +521,7 @@ const Restaurant = () => {
 
             </tbody>
           </Table>
-       
+
         </ModalBody>
         <ModalFooter>
           <Button className='bg-secondary' onClick={handleCancelShowItems} >Back</Button>{" "}
@@ -515,7 +529,7 @@ const Restaurant = () => {
 
 
       </Modal>
-     
+
       <Modal isOpen={isModalOpen} >
         <ModalHeader >Confirm</ModalHeader>
         <ModalBody>
@@ -526,9 +540,7 @@ const Restaurant = () => {
           <Button className='bg-danger' onClick={handleOk} > Delete  </Button>
         </ModalFooter>
 
-        {
-          console.log("hello", restaurentData?.filter(f => (f.restaurantid == formData.restaurantid))[0]?.openinghours?.substring(0, 5))
-        }
+
       </Modal>
 
       <Modal isOpen={isShowAddReservation}  >
@@ -572,7 +584,7 @@ const Restaurant = () => {
                 {
                   restaurentData?.length > 0 && restaurentData?.map((restaurant) => {
                     return <>
-                      <option value={restaurant?.restaurantid}>
+                      <option value={restaurant?.id}>
                         {restaurant?.name}
                       </option>
 
@@ -585,7 +597,8 @@ const Restaurant = () => {
             </div>
             {formData?.restaurantid != "" && <div className='row'>
               <div className='col-12 mb-3 text-success' >
-                {`Opening Time:${restaurentData?.filter(f => (f.restaurantid == formData.restaurantid))[0]?.openinghours} and Closing Time:${restaurentData?.filter(f => (f.restaurantid == formData.restaurantid))[0]?.closinghours}`}
+                {/* {`Opening Time:${restaurentData?.filter(f => (f.restaurantid == formData.restaurantid))[0]?.openingHours} and Closing Time:${restaurentData?.filter(f => (f.restaurantid == formData.restaurantid))[0]?.closingHours}`} */}
+                {`Opening Time:${restaurentData?.filter(f => (f.id == formData.restaurantid))[0]?.openingHours} and Closing Time:${restaurentData?.filter(f => (f.id == formData.restaurantid))[0]?.closingHours}`}
               </div>
 
             </div>}
@@ -627,10 +640,12 @@ const Restaurant = () => {
 
               {<Select
 
-                options={MenuItemsOptions?.map((m)=>{return{
-                  ...m,
-                  label:m.Name + " $"+ m.Price
-                }})}
+                options={MenuItemsOptions?.map((m) => {
+                  return {
+                    ...m,
+                    label: m.Name + " $" + m.Price
+                  }
+                })}
                 onChange={(e) => {
                   handleMenuItemsChange(e)
                 }}
@@ -662,7 +677,7 @@ const Restaurant = () => {
         </ModalFooter>
       </Modal>
 
-      
+
       <Card className='mt-2'>
         <CardHeader>
           <span className='flaot-start h4'>Restaurants</span>
@@ -733,7 +748,7 @@ const Restaurant = () => {
                       className='fw-bold h5'
                       style={{ cursor: "pointer" }}
                       onClick={() => {
-                       
+
                         handleCancelReservationModal()
                         handleViewOrder(reservation)
 
@@ -745,9 +760,9 @@ const Restaurant = () => {
                   <td>
                     <div className=' ' >
                       {canEditOrDelete(reservation?.data?.reservationDate, reservation?.data?.reservationTime) && (
-                        
+
                         <>
-                          
+
                           <BiEdit className="mx-2 h5 " style={{ cursor: "pointer" }} onClick={() => handleEdit(reservation, "editDetails")} />
 
                           <AiOutlineDelete className='text-danger h5 cursor-pointer ' style={{ cursor: "pointer" }} onClick={() => handleDelete(reservation?.id)} />
