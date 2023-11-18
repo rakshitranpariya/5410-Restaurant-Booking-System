@@ -89,10 +89,10 @@ const ReservationListing = () => {
 
   useEffect(() => {
     (async () => {
-      const data = localStorage.getItem('reservations');
-
-      setAllData(JSON.parse(data));
-      // await getData();
+      // const data = localStorage.getItem('reservations');
+      //
+      // setAllData(JSON.parse(data));
+      await getData();
     })();
   }, []);
 
