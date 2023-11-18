@@ -29,7 +29,7 @@ exports.handler = async (event, context) => {
       };
     }
 	
-	const docIdCheck = JSON.parse(event.body).pathParameters;
+	const docIdCheck = event.pathParameters;
 	 
     if (!docIdCheck) {
       return {
@@ -46,13 +46,13 @@ exports.handler = async (event, context) => {
       };
     }
 
-const docId = JSON.parse(event.body).pathParameters.id;
+const docId = event.pathParameters.id;
     
 
     // Parse the request body as JSON
     let updatedData;
     try {
-      updatedData = JSON.parse(event.body).body;
+      updatedData = event.body;
     } catch (parseError) {
       console.error("Error parsing JSON:", parseError);
       return {
