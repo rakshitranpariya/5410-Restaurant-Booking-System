@@ -205,20 +205,20 @@ function Dashboard() {
             // let filterData = data?.data.filter((f) => f.data.userId == userEmail && moment(new Date()).format("YYYY-MM-DD") == moment(new Date(f.data.createdAt)).format("YYYY-MM-DD"))
             // console.log("filterData", filterData)
             let valueDateMorning = moment("12:00", 'HH:mm a').format('HH:mm a')
-            let filterDataMorning = restaurentDataToday?.filter((f) => moment(f?.data?.reservationTime, 'HH:mm a').format('HH:mm a') < valueDateMorning
+            let filterDataMorning = restaurentDataToday?.filter((f) => moment(f?.data?.reservationTime, 'HH:mm a').format('HH:mm a') <= valueDateMorning
             )
             let valueDateNoon = moment("15:00", 'HH:mm a').format('HH:mm a')
 
-            let filterDataNoon = restaurentDataToday?.filter((f) => moment(f?.data?.reservationTime, 'HH:mm a').format('HH:mm a') < valueDateNoon && moment(f?.data?.reservationTime, 'HH:mm a').format('HH:mm a') > valueDateMorning
+            let filterDataNoon = restaurentDataToday?.filter((f) => moment(f?.data?.reservationTime, 'HH:mm a').format('HH:mm a') <= valueDateNoon && moment(f?.data?.reservationTime, 'HH:mm a').format('HH:mm a') > valueDateMorning
             )
             let valueDateEvening = moment("18:00", 'HH:mm a').format('HH:mm a')
 
-            let filterDataEvening = restaurentDataToday?.filter((f) => moment(f?.data?.reservationTime, 'HH:mm a').format('HH:mm a') < valueDateEvening && moment(f?.data?.reservationTime, 'HH:mm a').format('HH:mm a') > valueDateNoon
+            let filterDataEvening = restaurentDataToday?.filter((f) => moment(f?.data?.reservationTime, 'HH:mm a').format('HH:mm a') <= valueDateEvening && moment(f?.data?.reservationTime, 'HH:mm a').format('HH:mm a') > valueDateNoon
             )
 
             let valueDateNight = moment("23:59", 'HH:mm a').format('HH:mm a')
 
-            let filterDataNight = restaurentDataToday?.filter((f) => moment(f?.data?.reservationTime, 'HH:mm a').format('HH:mm a') < valueDateNight && moment(f?.data?.reservationTime, 'HH:mm a').format('HH:mm a') > valueDateEvening
+            let filterDataNight = restaurentDataToday?.filter((f) => moment(f?.data?.reservationTime, 'HH:mm a').format('HH:mm a') <= valueDateNight && moment(f?.data?.reservationTime, 'HH:mm a').format('HH:mm a') > valueDateEvening
             )
 
             let MorningTotal = 0
@@ -558,15 +558,20 @@ function Dashboard() {
                             >
                                 <CardBody>
                                     <div className="text-value text-center text-light">
-                                        {reservations.filter((f) => f.data.restaurantid == restaurantOwnerId && moment(f.data.reservationDate).format("YYYY-MM-DD") == moment(new Date()).format("YYYY-MM-DD")).map((m) => {
+                                        {/* {reservations.filter((f) => f.data.restaurantid == restaurantOwnerId && moment(f.data.reservationDate).format("YYYY-MM-DD") == moment(new Date()).format("YYYY-MM-DD")).map((m) => {
 
                                             return m.data.numberOfGuests
                                         }).reduce((accumulator, currentValue) => {
                                             return accumulator + currentValue
                                         }, 0)
+                                        } */}
+                                        {reservations.filter((f) => f.data.restaurantid == restaurantOwnerId && moment(f.data.reservationDate).format("YYYY-MM-DD") == moment(new Date()).format("YYYY-MM-DD"))?.length
+
+
+
                                         }
                                     </div>
-                                    <div className="text-center text-light">Today</div>
+                                    <div className="text-center text-light">Today's Reservations</div>
 
                                 </CardBody>
                             </Card>
@@ -595,15 +600,19 @@ function Dashboard() {
                             >
                                 <CardBody>
                                     <div className="text-value text-center text-light">
-                                        {reservations.filter((f) => f.data.restaurantid == restaurantOwnerId && moment(f?.data?.reservationDate).format("YYYY-MM-DD") >= moment(`${new Date()}`).format("YYYY-MM-DD") && moment(f?.data?.reservationDate).format("YYYY-MM-DD") <= moment(`${endDateinitail}`).format("YYYY-MM-DD")).map((m) => {
+                                        {/* {reservations.filter((f) => f.data.restaurantid == restaurantOwnerId && moment(f?.data?.reservationDate).format("YYYY-MM-DD") >= moment(`${new Date()}`).format("YYYY-MM-DD") && moment(f?.data?.reservationDate).format("YYYY-MM-DD") <= moment(`${endDateinitail}`).format("YYYY-MM-DD")).map((m) => {
 
                                             return m.data.numberOfGuests
                                         }).reduce((accumulator, currentValue) => {
                                             return accumulator + Number(currentValue)
                                         }, 0)
+                                        } */}
+                                        {reservations.filter((f) => f.data.restaurantid == restaurantOwnerId && moment(f?.data?.reservationDate).format("YYYY-MM-DD") >= moment(`${new Date()}`).format("YYYY-MM-DD") && moment(f?.data?.reservationDate).format("YYYY-MM-DD") <= moment(`${endDateinitail}`).format("YYYY-MM-DD"))?.length
+
+
                                         }
                                     </div>
-                                    <div className="text-center text-light">This Week</div>
+                                    <div className="text-center text-light">Weekly Reservations</div>
 
                                 </CardBody>
                             </Card>
@@ -633,15 +642,19 @@ function Dashboard() {
                             >
                                 <CardBody>
                                     <div className="text-value text-center text-light">
-                                        {reservations.filter((f) => f.data.restaurantid == restaurantOwnerId && moment(f?.data?.reservationDate).format("YYYY-MM-DD") >= moment(`${new Date().getFullYear()}-01-01`).format("YYYY-MM-DD") && moment(f?.data?.reservationDate).format("YYYY-MM-DD") < moment(`${new Date().getFullYear()}-12-31`).format("YYYY-MM-DD")).map((m) => {
+                                        {/* {reservations.filter((f) => f.data.restaurantid == restaurantOwnerId && moment(f?.data?.reservationDate).format("YYYY-MM-DD") >= moment(`${new Date().getFullYear()}-01-01`).format("YYYY-MM-DD") && moment(f?.data?.reservationDate).format("YYYY-MM-DD") < moment(`${new Date().getFullYear()}-12-31`).format("YYYY-MM-DD")).map((m) => {
 
                                             return m.data.numberOfGuests
                                         }).reduce((accumulator, currentValue) => {
                                             return accumulator + Number(currentValue)
                                         }, 0)
+                                        } */}
+                                        {reservations.filter((f) => f.data.restaurantid == restaurantOwnerId && moment(f?.data?.reservationDate).format("YYYY-MM-DD") >= moment(`${new Date().getFullYear()}-01-01`).format("YYYY-MM-DD") && moment(f?.data?.reservationDate).format("YYYY-MM-DD") < moment(`${new Date().getFullYear()}-12-31`).format("YYYY-MM-DD"))?.length
+
+
                                         }
                                     </div>
-                                    <div className="text-center text-light">This Year</div>
+                                    <div className="text-center text-light">Yearly Reservations</div>
 
                                 </CardBody>
                             </Card>
@@ -736,7 +749,7 @@ function Dashboard() {
                                 <br />
                                 <div className=' px-2 my-3'>
                                     {/* {} */}
-                                    <span>Total Table Booked: </span>
+                                    <span>Total Number of Guests: </span>
                                     {
                                         chartDataForToday.map(m => m["Table Booked"]).reduce((accumulator, currentValue) => {
                                             return accumulator + currentValue
@@ -835,7 +848,7 @@ function Dashboard() {
                                 <br />
                                 <div className=' px-2 my-3'>
                                     {/* {} */}
-                                    <span>Total Table Booked: </span>
+                                    <span>Total Number of Guests: </span>
                                     {
                                         chartDataForMonthly.map(m => m["Table Booked"]).reduce((accumulator, currentValue) => {
                                             return accumulator + currentValue

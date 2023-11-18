@@ -150,8 +150,12 @@ const Restaurant = () => {
   };
 
   const handleInputChange = event => {
-    const { name, value } = event.target;
+    const { name } = event.target;
+    let value = event.target.value
     if (name == "reservationTime") {
+      // console.log(value)
+
+
 
       const minDate = restaurentData?.filter(f => (f.id == formData.restaurantid))[0]?.openingHours
       const minTime = new Date(`20-10-2023T${minDate}`);
