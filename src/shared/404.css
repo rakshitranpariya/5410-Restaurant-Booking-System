@@ -1,0 +1,31 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f5f5f5;
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+}
+
+.number {
+    font-size: 10rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.message {
+    font-size: 1.5rem;
+    color: #555;
+}
+
+@media (max-width: 768px) {
+    .number {
+        font-size: 6rem;
+    }
+
+    .message {
+        font-size: 1rem;
+    }
+}

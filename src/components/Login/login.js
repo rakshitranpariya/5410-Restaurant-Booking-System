@@ -52,15 +52,25 @@ const Login = () => {
   };
 
   const handleGoogleLogin = async () => {
-    if (validator.fieldValid('Type')) {
-      await dispatch(googleLogin(fields));
-      fields.type === '1'
-        ? await dispatch(handleSidebarChange('/restaurantListing'))
-        : await dispatch(handleSidebarChange('/reservationListing'));
-      fields.type === '1' ? navigate('/restaurantListing') : navigate('/reservationListing');
-    } else {
-      validator.showMessageFor('Type');
-      setValidator(true);
+    try {
+      if (validator.fieldValid('Type')) {
+        const res = await dispatch(googleLogin(fields));
+        if (res) {
+          fields.type.toString() === '1'
+            ? await dispatch(handleSidebarChange('/restaurantListing'))
+            : await dispatch(handleSidebarChange('/reservationListing'));
+          fields.type.toString() === '1'
+            ? navigate('/restaurantListing')
+            : navigate('/reservationListing');
+        } else {
+          throw new Error('login failed');
+        }
+      } else {
+        validator.showMessageFor('Type');
+        setValidator(true);
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -72,7 +82,9 @@ const Login = () => {
         if (res) {
           await dispatch(handleSidebarChange('/restaurantListing'));
           setLoading(false);
-          fields.type === '1' ? navigate('/restaurantListing') : navigate('/reservationListing');
+          fields.type.toString() === '1'
+            ? navigate('/restaurantListing')
+            : navigate('/reservationListing');
         } else {
           throw new Error('Login Failed');
         }
@@ -176,13 +188,6 @@ const Login = () => {
                 </div>
               </Form.Item>
               <Form.Item>
-                <div style={{ display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
-                  <div>
-                    <Form.Item>
-                      <a href="/forgot-password">Forgot Password?</a>
-                    </Form.Item>
-                  </div>
-                </div>
                 <div
                   style={{
                     display: 'flex',

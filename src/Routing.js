@@ -9,13 +9,12 @@ const Sidebar = lazy(() => import('./shared/sidebar'));
 const Login = lazy(() => import('./components/Login/login'));
 const Restaurant = lazy(() => import('./components/Restaurant/restaurant'));
 const Register = lazy(() => import('./components/Register/register'));
-const ForgotPassword = lazy(() => import('./components/ForgotPassword/forgotPassword'));
-const ChangePassword = lazy(() => import('./components/changePassword/changePassword'));
 const RestaurantListing = lazy(() =>
   import('./components/RestaurantListing/P_RestaurantListingPage')
 );
 const MenuPage = lazy(() => import('./components/MenuListing/P_MenulistingPage'));
 const ReservationListing = lazy(() => import('./components/ReservationListing/reservationListing'));
+const PageNotFound = lazy(() => import('./shared/404'));
 const { Content } = Layout;
 
 const Routing = () => {
@@ -34,14 +33,6 @@ const Routing = () => {
     {
       path: '/register',
       component: <Register />,
-    },
-    {
-      path: '/forgot-password',
-      component: <ForgotPassword />,
-    },
-    {
-      path: '/change-password/:id/:token',
-      component: <ChangePassword />,
     },
   ].filter(cur => cur);
 
@@ -109,6 +100,7 @@ const Routing = () => {
               element={<PrivateRoute>{route.component}</PrivateRoute>}
             />
           ))}
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Layout>
     </Suspense>
