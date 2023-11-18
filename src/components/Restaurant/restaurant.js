@@ -26,7 +26,7 @@ const Restaurant = () => {
     restaurantid: "",
     menuitemid: []
   });
-  const userEmail = useSelector((state) => state?.auth?.user?.email)
+  const userEmail = useSelector((state) => state?.auth?.user?.id)
 
   const [isEditing, setIsEditing] = useState(false);
   const [currentEditId, setCurrentEditId] = useState(null);
@@ -54,13 +54,16 @@ const Restaurant = () => {
 
       setLoading(true)
 
-      let url = "https://nsbbk26x0l.execute-api.us-east-1.amazonaws.com/getall"
+      let url = "https://wvnzmflpyb.execute-api.us-east-1.amazonaws.com/reservation/getallreservations"
 
-      // let url = "https://nsbbk26x0l.execute-api.us-east-1.amazonaws.com/getchartdata"
+
 
       let data = await axios.get(url)
+      console.log('DS List')
+      console.log(data);
+      let jsonFilter = JSON.parse(data?.data?.body)
 
-      let filterData = data?.data.filter((f) => f.data.userId == userEmail)
+      let filterData = jsonFilter?.filter((f) => f.data.userId == userEmail)
 
 
       setReservations(filterData)
@@ -74,7 +77,7 @@ const Restaurant = () => {
   };
 
   const getResturenrData = async () => {
-    // let url = "https://l1j6zvbe7c.execute-api.us-east-1.amazonaws.com/restaurantlist"
+
     let url = "https://l1j6zvbe7c.execute-api.us-east-1.amazonaws.com/5410-project-getRestaurantDetails"
     let data = await axios.get(url)
     let response = data?.data
@@ -88,7 +91,7 @@ const Restaurant = () => {
     try {
       let url = "https://l1j6zvbe7c.execute-api.us-east-1.amazonaws.com/individualmenulist";
       let payload = {
-        "restaurantid": Number(restaurantid)
+        "restaurantid": restaurantid
       }
       let data = await axios.post(url, payload, {
         headers: {
@@ -230,17 +233,17 @@ const Restaurant = () => {
         }
       };
 
-      if (checkValidation) {
-        toast.error("Please enter all required fields.")
-        setLoading(false)
+      // if (checkValidation) {
+      //   toast.error("Please enter all required fields.")
+      //   setLoading(false)
 
-        return false
-      }
+      //   return false
+      // }
 
       if (isEditing) {
 
 
-        let url = "https://3xkugu6ck3.execute-api.us-east-1.amazonaws.com/reservation/updatereservation"
+        let url = "https://wvnzmflpyb.execute-api.us-east-1.amazonaws.com/reservation/updatereservation"
         let setData = {
           "pathParameters": {
             id: currentEditId
@@ -257,8 +260,7 @@ const Restaurant = () => {
         let config = {
           method: 'post',
           maxBodyLength: Infinity,
-          // url: 'https://3xkugu6ck3.execute-api.us-east-1.amazonaws.com/reservation/createreservation',
-          // url: 'https://3xkugu6ck3.execute-api.us-east-1.amazonaws.com/reservation/createreservation',
+
           headers: {
             'Content-Type': 'application/json'
           },
@@ -291,11 +293,8 @@ const Restaurant = () => {
         let config = {
           method: 'post',
           maxBodyLength: Infinity,
-          url: 'https://3xkugu6ck3.execute-api.us-east-1.amazonaws.com/reservation/createreservation',
-          // url: 'https://3xkugu6ck3.execute-api.us-east-1.amazonaws.com/Holistic/createreservation',
-          // url: "https://3xkugu6ck3.execute-api.us-east-1.amazonaws.com/Holistic/getHolisticChartData",
-          // url: "https://nsbbk26x0l.execute-api.us-east-1.amazonaws.com/getchartdata",
-          // url: "https://dzbx9ilhx3.execute-api.us-east-1.amazonaws.com/chartdata",
+          url: 'https://wvnzmflpyb.execute-api.us-east-1.amazonaws.com/reservation/createreservation',
+
 
           headers: {
             'Content-Type': 'application/json',
@@ -368,7 +367,7 @@ const Restaurant = () => {
   const handleOk = async () => {
     setLoading(true)
 
-    let url = "https://3xkugu6ck3.execute-api.us-east-1.amazonaws.com/reservation/deletereservation"
+    let url = "https://wvnzmflpyb.execute-api.us-east-1.amazonaws.com/reservation/deletereservation"
 
     const config = {
       headers: {
@@ -438,7 +437,10 @@ const Restaurant = () => {
     console.log("selectedOptions", selectedOptions)
     setSelectedMenuItems(selectedOptions)
     let selectedIds = selectedOptions.map((m) => {
-      return m.value
+      return {
+        itemName: m.Name,
+        menuitemid: m.menuitemid
+      }
     })
     setFormData((prev) => {
       return {
@@ -503,19 +505,23 @@ const Restaurant = () => {
             </thead>
             <tbody className='border'>
               {
-                formData?.menuitemid?.length > 0 ? MenuItemsOptions?.filter((f) => formData?.menuitemid?.includes(Number(f.menuitemid)))?.map((m, index) => {
-                  return <>
-                    <tr>
-                      <td className='border text-center'>{index + 1}</td>
-                      <td className='border text-center'>{m.Name}</td>
-                      <td className='border text-center'>{m?.Category}</td>
-                      <td className='border text-center'>{"$"}{m?.Price}</td>
-
-                    </tr>
-                  </>
+                formData?.menuitemid?.length > 0 ? MenuItemsOptions?.filter((f) =>
+                  formData?.menuitemid?.includes(Number(f.menuitemid)
 
 
-                }) : <tr> <td colSpan={"4"} >{"You have not ordered anything yet."}</td> </tr>
+                  ))?.map((m, index) => {
+                    return <>
+                      <tr>
+                        <td className='border text-center'>{index + 1}</td>
+                        <td className='border text-center'>{m.Name}</td>
+                        <td className='border text-center'>{m?.Category}</td>
+                        <td className='border text-center'>{"$"}{m?.Price}</td>
+
+                      </tr>
+                    </>
+
+
+                  }) : <tr> <td colSpan={"4"} >{"You have not ordered anything yet."}</td> </tr>
 
               }
 
@@ -651,7 +657,14 @@ const Restaurant = () => {
                 }}
 
 
-                value={MenuItemsOptions?.filter(f => formData.menuitemid?.includes(f?.menuitemid))}
+                value={MenuItemsOptions?.filter(f => {
+                  let countLenth = formData.menuitemid.filter((fc) => fc.menuitemid == f?.menuitemid)
+
+                  return countLenth.length > 0
+
+
+                }
+                )}
 
 
                 closeMenuOnSelect={false}
