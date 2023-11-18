@@ -8,10 +8,9 @@ import { useSelector } from 'react-redux'
 import moment from 'moment';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
-// import { Button } from 'antd'
-// import DatePicker from "react-datepicker";
+
 import { BiFilterAlt } from "react-icons/bi"
-// BiFilterAlt
+
 
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, Rectangle, Label } from 'recharts';
@@ -22,7 +21,7 @@ function Dashboard() {
 
     const [loading, setLoading] = useState(false)
     const restaurantOwnerId = useSelector((state) => state?.auth?.user?.id)
-    // const restaurantOwnerId = "3TDeF8sny1OcasKAokIP"
+    
     const [reservations, setReservations] = useState([]);
     const [chartDataForToday, setChartDataForToday] = useState([])
     const [chartDataForMonthly, setChartDataForMonthly] = useState([])
@@ -49,7 +48,7 @@ function Dashboard() {
 
 
     const handleApplyfilter = () => {
-        // const filterDates = filterDates
+        
         const toDate = moment(new Date(filterDates.toDate)).format("YYYY-MM-DD")
         const fromDate = moment(new Date(filterDates.fromDate)).format("YYYY-MM-DD")
         let filterData = chartData.filter((f) => moment(new Date(f.data.reservationDate)).format("YYYY-MM-DD") >= fromDate && moment(new Date(f.data.reservationDate)).format("YYYY-MM-DD") <= toDate)
@@ -62,7 +61,7 @@ function Dashboard() {
 
 
     useEffect(() => {
-        // fetchData();
+        
         fetchChartData();
 
     }, [])
@@ -113,13 +112,7 @@ function Dashboard() {
 
     const fetchChartData = async () => {
         try {
-            // let url = "https://3xkugu6ck3.execute-api.us-east-1.amazonaws.com/Holistic/getHolisticChartData"
-            // let url = "https://wvnzmflpyb.execute-api.us-east-1.amazonaws.com/reservation/getholisticchartdata"
-            // let url = "https://3xkugu6ck3.execute-api.us-east-1.amazonaws.com/Holistic/getHolisticChartData"
-            // // let url = "https://nsbbk26x0l.execute-api.us-east-1.amazonaws.com/getchartdata"
-            // // let url = "https://nsbbk26x0l.execute-api.us-east-1.amazonaws.com/getchartdata"
-            // let url = "https://dzbx9ilhx3.execute-api.us-east-1.amazonaws.com/chartdata"
-            // let url = "https://dzbx9ilhx3.execute-api.us-east-1.amazonaws.com/chartdata?restaurantid=1&selectedDate=2023-11-10"
+            
             let url = "https://wvnzmflpyb.execute-api.us-east-1.amazonaws.com/reservation/getallreservations"
 
 
@@ -127,7 +120,7 @@ function Dashboard() {
             let data = await axios.get(url)
 
 
-            // console.log("datadatadata", JSON.parse(data.data.body))
+            
             let jsonFilterData = JSON.parse(data?.data?.body)
             let filterData = jsonFilterData?.filter((f) => f.data.restaurantid == restaurantOwnerId)
 
@@ -194,16 +187,14 @@ function Dashboard() {
 
             let data = await axios.post(url, config.data, config.headers)
 
-            // let data = await axios.get(url)
-            // console.log("datadatadata", data.data);
+            
             let TodayDate = moment(new Date()).format("YYYY-MM-DD")
-            // alert(TodayDate)
+            
             let ReservationData = data?.data?.body?.outdata?.filter((f) => f.data.restaurantid == restaurantOwnerId)
             let filterData = data?.data?.body?.outdata?.filter((f) => f.data.restaurantid == restaurantOwnerId)
             let restaurentData = data?.data?.body?.outdata.filter((f) => f.data.restaurantid == restaurantOwnerId)
             let restaurentDataToday = data?.data?.body?.outdata.filter((f) => f.data.restaurantid == restaurantOwnerId && moment(f.data.reservationDate).format("YYYY-MM-DD") == moment(selectedDay).format("YYYY-MM-DD"))
-            // let filterData = data?.data.filter((f) => f.data.userId == userEmail && moment(new Date()).format("YYYY-MM-DD") == moment(new Date(f.data.createdAt)).format("YYYY-MM-DD"))
-            // console.log("filterData", filterData)
+           
             let valueDateMorning = moment("12:00", 'HH:mm a').format('HH:mm a')
             let filterDataMorning = restaurentDataToday?.filter((f) => moment(f?.data?.reservationTime, 'HH:mm a').format('HH:mm a') <= valueDateMorning
             )
@@ -354,13 +345,13 @@ function Dashboard() {
 
             });
 
-            // let TotalBookinTillNow = restaurentData?.filter((f) => moment(f?.data?.reservationDate).format("YYYY-MM-DD") <= moment(new Date()).format("YYYY-MM-DD"))
+           
             let TotalBookingTillNow = 0
             restaurentData.forEach(element => {
                 TotalBookingTillNow += Number(element.data.numberOfGuests)
 
             });
-            // alert(TotalBookingTillNow)
+            
             let ChartDataMonthly = [
                 {
                     name: "Jan",
@@ -495,7 +486,7 @@ function Dashboard() {
 
             ]
 
-            // setReservations(filterData)
+            
             setChartDataForToday(ChartDataToday)
             setChartDataForMonthly(ChartDataMonthly)
             setChartDataForWeekly(ChartDataWeekly)
@@ -549,7 +540,7 @@ function Dashboard() {
                                 }}
 
                                 style={{
-                                    // backgroundColor: "#c96b6b",
+                                    
 
                                     width: 150,
                                     cursor: "pointer",
@@ -558,13 +549,7 @@ function Dashboard() {
                             >
                                 <CardBody>
                                     <div className="text-value text-center text-light">
-                                        {/* {reservations.filter((f) => f.data.restaurantid == restaurantOwnerId && moment(f.data.reservationDate).format("YYYY-MM-DD") == moment(new Date()).format("YYYY-MM-DD")).map((m) => {
-
-                                            return m.data.numberOfGuests
-                                        }).reduce((accumulator, currentValue) => {
-                                            return accumulator + currentValue
-                                        }, 0)
-                                        } */}
+                                        {}
                                         {reservations.filter((f) => f.data.restaurantid == restaurantOwnerId && moment(f.data.reservationDate).format("YYYY-MM-DD") == moment(new Date()).format("YYYY-MM-DD"))?.length
 
 
@@ -580,7 +565,7 @@ function Dashboard() {
 
                             <Card
                                 aria-disabled
-                                // className=""
+                                
                                 onClick={() => {
 
 
@@ -600,13 +585,7 @@ function Dashboard() {
                             >
                                 <CardBody>
                                     <div className="text-value text-center text-light">
-                                        {/* {reservations.filter((f) => f.data.restaurantid == restaurantOwnerId && moment(f?.data?.reservationDate).format("YYYY-MM-DD") >= moment(`${new Date()}`).format("YYYY-MM-DD") && moment(f?.data?.reservationDate).format("YYYY-MM-DD") <= moment(`${endDateinitail}`).format("YYYY-MM-DD")).map((m) => {
-
-                                            return m.data.numberOfGuests
-                                        }).reduce((accumulator, currentValue) => {
-                                            return accumulator + Number(currentValue)
-                                        }, 0)
-                                        } */}
+                                        {}
                                         {reservations.filter((f) => f.data.restaurantid == restaurantOwnerId && moment(f?.data?.reservationDate).format("YYYY-MM-DD") >= moment(`${new Date()}`).format("YYYY-MM-DD") && moment(f?.data?.reservationDate).format("YYYY-MM-DD") <= moment(`${endDateinitail}`).format("YYYY-MM-DD"))?.length
 
 
@@ -622,7 +601,7 @@ function Dashboard() {
 
                             <Card
                                 aria-disabled
-                                // className=""
+                                
                                 onClick={() => {
 
 
@@ -642,13 +621,7 @@ function Dashboard() {
                             >
                                 <CardBody>
                                     <div className="text-value text-center text-light">
-                                        {/* {reservations.filter((f) => f.data.restaurantid == restaurantOwnerId && moment(f?.data?.reservationDate).format("YYYY-MM-DD") >= moment(`${new Date().getFullYear()}-01-01`).format("YYYY-MM-DD") && moment(f?.data?.reservationDate).format("YYYY-MM-DD") < moment(`${new Date().getFullYear()}-12-31`).format("YYYY-MM-DD")).map((m) => {
-
-                                            return m.data.numberOfGuests
-                                        }).reduce((accumulator, currentValue) => {
-                                            return accumulator + Number(currentValue)
-                                        }, 0)
-                                        } */}
+                                        {}
                                         {reservations.filter((f) => f.data.restaurantid == restaurantOwnerId && moment(f?.data?.reservationDate).format("YYYY-MM-DD") >= moment(`${new Date().getFullYear()}-01-01`).format("YYYY-MM-DD") && moment(f?.data?.reservationDate).format("YYYY-MM-DD") < moment(`${new Date().getFullYear()}-12-31`).format("YYYY-MM-DD"))?.length
 
 
@@ -891,7 +864,7 @@ function Dashboard() {
 
 
                     {filterDates.fromDate && <p className='text-center ' > Filter applied: result shown from <b>{filterDates.fromDate}</b> to <b>{filterDates.toDate}</b> </p>}
-                    {/* <p className='h6 mt-lg-4 mt-sm-2' >Total Bookings{`(${reservations?.length})`}</p> */}
+                    {}
                     {false && <Table bordered>
                         <thead>
                             <tr>
@@ -901,7 +874,7 @@ function Dashboard() {
                                 <th>
                                     Customer Name
                                 </th>
-                                {/* <th>Restaurant Name</th> */}
+                                {}
                                 <th>
                                     Date
                                 </th>
@@ -911,15 +884,11 @@ function Dashboard() {
                                 <th>
                                     Number of Person(s)
                                 </th>
-                                {/* <th>
-                  Your Order(s)
-                </th> */}
+                                {}
                                 <th>
                                     Booking Status
                                 </th>
-                                {/* <th>
-                  Action
-                </th> */}
+                                {}
                             </tr>
                         </thead>
                         { }

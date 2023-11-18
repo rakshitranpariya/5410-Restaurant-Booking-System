@@ -141,7 +141,7 @@ const Restaurant = () => {
 
     var currentDate = new Date();
 
-    // Add 1 hour to the current date
+    
     currentDate.setHours(currentDate.getHours() + 1);
     const reservationDateTime = new Date(`${reservationDate}T${reservationTime}`);
     const diffHours = (reservationDateTime > currentDate)
@@ -153,8 +153,7 @@ const Restaurant = () => {
     const { name } = event.target;
     let value = event.target.value
     if (name == "reservationTime") {
-      // console.log(value)
-
+      
 
 
       const minDate = restaurentData?.filter(f => (f.id == formData.restaurantid))[0]?.openingHours
@@ -237,12 +236,7 @@ const Restaurant = () => {
         }
       };
 
-      // if (checkValidation) {
-      //   toast.error("Please enter all required fields.")
-      //   setLoading(false)
-
-      //   return false
-      // }
+      
 
       if (isEditing) {
 
@@ -399,7 +393,7 @@ const Restaurant = () => {
       setIsModalOpen(false);
       SetDeletereservationsId(null);
       fetchData();
-      // setLoading(false)
+      
 
     } catch (error) {
       setLoading(false)
