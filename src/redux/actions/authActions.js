@@ -63,7 +63,7 @@ export const getUserByEmail = (email, accessToken) => async dispatch => {
     localStorage.setItem('token', accessToken);
     localStorage.setItem('userEmail', email);
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     dispatch({ type: 'AUTH_FAILED' });
     return false;
   }
