@@ -23,7 +23,7 @@ const RestaurantListingPage = () => {
         console.error("Error:", error.message);
       }
     };
-
+    //.
     fetchData();
   }, []); // Empty dependency array to fetch data only on component mount
 
