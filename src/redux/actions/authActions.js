@@ -55,7 +55,7 @@ export const getUserByEmail = (email, accessToken) => async dispatch => {
 
     const res = await getDocs(searchQuery);
     const payloadData = {
-      id: res.docs[0].id,
+      id: res?.docs[0]?.id,
       email: res.docs[0].data().email,
       type: res.docs[0].data().type,
     };
