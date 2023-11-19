@@ -7,16 +7,32 @@ const initialState = {
   },
   sidebarData: [
     {
+      key: '/dashboard',
+      label: 'Dashboard',
+      icon: <UserOutlined />,
+      url: '/dashboard',
+      type: '2',
+    },
+    {
       key: '/restaurants',
       label: 'Restaurants',
       icon: <UserOutlined />,
       url: '/restaurants',
+      type: '1',
+    },
+    {
+      key: '/reservationListing',
+      label: 'Reservations',
+      icon: <UserOutlined />,
+      url: '/reservationListing',
+      type: '2',
     },
     {
       key: '/logout',
       label: 'Logout',
       icon: <LogoutOutlined />,
       url: '/login',
+      type: 'all',
     },
   ],
 };

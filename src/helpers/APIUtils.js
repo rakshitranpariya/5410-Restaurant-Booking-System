@@ -8,7 +8,7 @@ const TOKEN_NAME = process.env.REACT_APP_TOKEN_NAME;
 class ApiUtils {
   constructor(message = false, request = true, appendAuth = true, response = true) {
     this.axios = axios.create({
-      baseURL: `${process.env.REACT_APP_API_URL}/api`,
+      baseURL: ``,
     });
 
     if (request) {
@@ -63,13 +63,6 @@ class ApiUtils {
     }
   }
 
-  login = data =>
-    this.axios({
-      method: 'POST',
-      url: '/users/login',
-      data,
-    });
-
   forgotPassword = data =>
     this.axios({
       method: 'POST',
@@ -104,13 +97,6 @@ class ApiUtils {
       url: '/product/',
       data,
     });
-
-  getOneProduct = data =>
-    this.axios({
-      method: 'POST',
-      url: '/product/getone',
-      data,
-    });
   suggestion = data =>
     this.axios({
       method: 'POST',
@@ -118,29 +104,17 @@ class ApiUtils {
       data,
     });
 
-  setLike = data =>
-    this.axios({
-      method: 'POST',
-      url: '/likes/like',
-      data,
-    });
-  setRating = data =>
-    this.axios({
-      method: 'POST',
-      url: '/ratings/rating',
-      data,
-    });
-  getRatings = data =>
-    this.axios({
-      method: 'POST',
-      url: '/ratings/',
-      data,
-    });
-
   updatePassword = (id, data) =>
     this.axios({
       method: 'PATCH',
       url: `/users/my-profile/edit-profile/change-password/${id}`,
+      data,
+    });
+
+  addRestaurant = data =>
+    this.axios({
+      method: 'POST',
+      url: 'https://vzgth5nw0m.execute-api.us-east-1.amazonaws.com/prod/insertRestaurantKeys',
       data,
     });
 }

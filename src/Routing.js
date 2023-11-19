@@ -4,20 +4,22 @@ import { useSelector } from 'react-redux';
 import { Layout } from 'antd';
 import Loader from './shared/loader';
 
+const Dashboard = lazy(() => import('./components/Dashboard/dashboard'));
 const Sidebar = lazy(() => import('./shared/sidebar'));
 const Login = lazy(() => import('./components/Login/login'));
 const Restaurant = lazy(() => import('./components/Restaurant/restaurant'));
 const Register = lazy(() => import('./components/Register/register'));
-const ForgotPassword = lazy(() => import('./components/ForgotPassword/forgotPassword'));
-const ChangePassword = lazy(() => import('./components/changePassword/changePassword'));
 const RestaurantListing = lazy(() =>
   import('./components/RestaurantListing/P_RestaurantListingPage')
 );
 const MenuPage = lazy(() => import('./components/MenuListing/P_MenulistingPage'));
+const ReservationListing = lazy(() => import('./components/ReservationListing/reservationListing'));
+const PageNotFound = lazy(() => import('./shared/404'));
 const { Content } = Layout;
 
 const Routing = () => {
-  const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
+  const { isAuthenticated, user } = useSelector(state => state.auth);
+  // console.log("user",user)
   const navigate = useNavigate();
   const PublicRoutes = [
     {
@@ -32,30 +34,37 @@ const Routing = () => {
       path: '/register',
       component: <Register />,
     },
-    {
-      path: '/forgot-password',
-      component: <ForgotPassword />,
-    },
-    {
-      path: '/change-password/:id/:token',
-      component: <ChangePassword />,
-    },
   ].filter(cur => cur);
 
   const PrivateRoutes = [
     {
       path: '/restaurantListing',
       component: <RestaurantListing />,
+      type: '1',
     },
     {
       path: '/menu/:restaurantId',
       component: <MenuPage />,
+      type: '1',
     },
     {
       path: '/restaurants',
       component: <Restaurant />,
+      type: '1',
     },
-  ].filter(cur => cur);
+    {
+      path: '/reservationListing',
+      component: <ReservationListing />,
+      type: '2',
+    },
+    {
+      path: '/dashboard',
+      component: <Dashboard />,
+      type:'2'
+
+
+    },
+  ].filter(cur => cur && String(cur.type) == String(user.type));
 
   const PrivateRoute = ({ children }) => {
     if (!isAuthenticated) navigate('/login', { replace: true });
@@ -63,9 +72,11 @@ const Routing = () => {
   };
 
   const PublicRoute = ({ children }) => {
-    console.log('after register', isAuthenticated);
-    if (isAuthenticated) navigate('/restaurantListing', { replace: true });
-    return isAuthenticated ? <Restaurant /> : children;
+    if (isAuthenticated)
+      user.type === '1'
+        ? navigate('/restaurantListing', { replace: true })
+        : navigate('/reservationListing', { replace: true });
+    return isAuthenticated ? user.type === '1' ? <Restaurant /> : <ReservationListing /> : children;
   };
 
   return (
@@ -89,6 +100,7 @@ const Routing = () => {
               element={<PrivateRoute>{route.component}</PrivateRoute>}
             />
           ))}
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Layout>
     </Suspense>

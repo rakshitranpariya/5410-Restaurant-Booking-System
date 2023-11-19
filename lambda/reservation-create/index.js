@@ -10,7 +10,7 @@ const db = admin.firestore();
 exports.handler = async (event, context) => {
   try {
     // Check if the request body is empty
-    if (!event.body) {
+    if (!event) {
       return {
         statusCode: 400,
 		headers: {
@@ -28,7 +28,7 @@ exports.handler = async (event, context) => {
     // Parse the request body as JSON
     let data;
     try {
-      data = JSON.parse(event.body);
+      data = (event);
     } catch (parseError) {
       console.error("Error parsing JSON:", parseError);
       return {
