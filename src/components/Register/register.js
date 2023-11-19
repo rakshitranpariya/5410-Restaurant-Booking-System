@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Form, Input, Layout, Radio, theme } from 'antd';
+import { Button, Form, Input, Layout, theme } from 'antd';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import GoogleButton from 'react-google-button';
@@ -23,7 +23,6 @@ const Register = () => {
     email: null,
     password: null,
     confirmPassword: null,
-    type: null,
   });
 
   const [validator, setValidator] = useSimpleReactValidator(
@@ -51,36 +50,17 @@ const Register = () => {
     }));
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      if (validator.fieldValid('Type')) {
-        await dispatch(googleLogin(fields));
-      } else {
-        validator.getErrorMessages();
-        setValidator(true);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const handleSubmit = async () => {
-    try {
-      setLoading(true);
-      if (validator.allValid()) {
-        const res = await dispatch(register(fields));
-        if (res) {
-          console.log('register');
-          setLoading(false);
-          navigate('/login');
-        } else throw new Error('failed');
-      } else {
-        setLoading(false);
-        validator.getErrorMessages();
-        setValidator(true);
-      }
-    } catch (err) {
-      console.log(err);
+    setLoading(true);
+    if (validator.allValid()) {
+      await dispatch(register(fields));
+      console.log('register');
+      setLoading(false);
+      navigate('/login');
+    } else {
+      setLoading(false);
+      validator.getErrorMessages();
+      setValidator(true);
     }
   };
 
@@ -182,23 +162,14 @@ const Register = () => {
                   )}{' '}
                 </div>
               </Form.Item>
-              <Form.Item
-                label={
-                  <span className="label">
-                    <span className="required-asterisk">*</span> Account Type{' '}
-                  </span>
-                }
-              >
-                <Radio.Group onChange={e => handleChange(e, 'type')} value={fields.type}>
-                  <Radio value={1}>User</Radio>
-                  <Radio value={2}>Restaurant Owner</Radio>
-                </Radio.Group>
-                <div className={validator.errorMessages.type ? 'error-message' : ''}>
-                  {' '}
-                  {validator.message('Type', fields.type, 'required')}{' '}
-                </div>
-              </Form.Item>
               <Form.Item>
+                <div style={{ display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
+                  <div>
+                    <Form.Item>
+                      <a href="/forgot-password">Forgot Password?</a>
+                    </Form.Item>
+                  </div>
+                </div>
                 <div
                   style={{
                     display: 'flex',
@@ -233,7 +204,7 @@ const Register = () => {
                   className="google"
                   label="Sign Up with Google"
                   style={{ width: '100%' }}
-                  onClick={() => handleGoogleLogin()}
+                  onClick={async () => await dispatch(googleLogin())}
                 />
               </Form.Item>
             </Form>

@@ -10,7 +10,7 @@ const db = admin.firestore();
 exports.handler = async (event, context) => {
   try {
     // Check if a valid document ID is provided in the path parameters
-    const bodyCheck = event;
+    const bodyCheck = event.body;
     if (!bodyCheck) {
       return {
         statusCode: 400,
@@ -26,7 +26,7 @@ exports.handler = async (event, context) => {
       };
     }
 	
-	const docId = event.pathParameters.id;
+	const docId = JSON.parse(event.body).pathParameters.id;
 
     // Check if the document with the provided ID exists before attempting to delete it
     const docSnapshot = await db.collection("reservations").doc(docId).get();

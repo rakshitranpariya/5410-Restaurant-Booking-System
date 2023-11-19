@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
-import RestaurantTile from "./C_RestaurentDetailsTile";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import RestaurantTile from './C_RestaurentDetailsTile';
+import { useNavigate } from 'react-router-dom';
 
 const RestaurantListingPage = () => {
   const [restaurantData, setRestaurantData] = useState([]);
@@ -10,26 +9,30 @@ const RestaurantListingPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log("Fetching data...");
-
-        const response = await axios.get(
-          "https://vzgth5nw0m.execute-api.us-east-1.amazonaws.com/prod/getRestaurantData"
+        console.log('Fetching data...');
+        const response = await fetch(
+          'https://l1j6zvbe7c.execute-api.us-east-1.amazonaws.com/restaurantlist'
         );
 
-        const data = response.data.body;
-        console.log(data);
-        setRestaurantData(JSON.parse(data));
+        if (!response.ok) {
+          console.error('Failed to fetch data:', response.statusText);
+          throw new Error('Failed to fetch data');
+        }
+
+        const data = await response.json();
+        console.log('Data received:', data);
+        setRestaurantData(data);
       } catch (error) {
-        console.error("Error:", error.message);
+        console.error('Error:', error.message);
       }
     };
 
     fetchData();
-  }, []); // Empty dependency array to fetch data only on component mount
+  }, []);
 
   const handleReservationClick = () => {
     // Navigate to "/restaurants"
-    navigate("/restaurants");
+    navigate('/restaurants');
   };
 
   return (
@@ -37,27 +40,21 @@ const RestaurantListingPage = () => {
       <h1 className="m-5">Restaurant List</h1>
       <div className="container">
         <div className="row">
-          {restaurantData.map((restaurant) => (
-            <div key={restaurant.id} className="col-md-4">
+          {restaurantData.map(restaurant => (
+            <div key={restaurant.restaurantid} className="col-md-4">
               <RestaurantTile
-                restaurantId={restaurant.id}
-                email={restaurant.email}
+                restaurantId={restaurant.restaurantid}
                 title={restaurant.name}
                 city={restaurant.city}
-                startTime={restaurant.openingHours}
-                endTime={restaurant.closingHours}
-                currentStatus={restaurant.currentStatus}
-                availability={restaurant.availability}
+                startTime={restaurant.openinghours}
+                endTime={restaurant.closinghours}
               />
             </div>
           ))}
         </div>
       </div>
       <div className="text-center mt-4">
-        <button
-          className="btn btn-primary btn-lg"
-          onClick={handleReservationClick}
-        >
+        <button className="btn btn-primary btn-lg" onClick={handleReservationClick}>
           Make a Reservation
         </button>
       </div>

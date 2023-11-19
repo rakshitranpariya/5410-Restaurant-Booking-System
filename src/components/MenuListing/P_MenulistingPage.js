@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import React, { useEffect, useState, useRef } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const MenuPage = () => {
   const { restaurantId } = useParams();
@@ -10,26 +9,29 @@ const MenuPage = () => {
   const isMounted = useRef(true); // Use useRef to track whether the component is mounted
 
   useEffect(() => {
-    console.log(restaurantId);
     const fetchMenu = async () => {
       try {
-        const response = await axios.post(
-          "https://vzgth5nw0m.execute-api.us-east-1.amazonaws.com/prod/getMenuDataPerRestaurantId",
+        const response = await fetch(
+          `https://l1j6zvbe7c.execute-api.us-east-1.amazonaws.com/individualmenulist`,
           {
-            restaurantid: restaurantId,
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              restaurantid: restaurantId,
+            }),
           }
         );
 
-        // if (!response.ok) {
-        //   throw new Error("Failed to fetch menu");
-        // }
-        console.log(response);
+        if (!response.ok) {
+          throw new Error('Failed to fetch menu');
+        }
 
-        console.log(JSON.parse(response.data.body).menuItems);
-        setMenu(JSON.parse(response.data.body).menuItems);
-        console.log(menu);
+        const menuData = await response.json();
+        setMenu(menuData);
       } catch (error) {
-        console.error("Error fetching menu:", error);
+        console.error('Error fetching menu:', error);
       } finally {
         if (isMounted.current) {
           setLoading(false);
@@ -40,9 +42,10 @@ const MenuPage = () => {
     fetchMenu();
 
     return () => {
+      // Set isMounted to false when the component is unmounted
       isMounted.current = false;
     };
-  }, [restaurantId]); // Empty dependency array to run the effect only once on mount
+  }, [restaurantId]);
 
   const goBack = () => {
     navigate(-1);
@@ -54,14 +57,14 @@ const MenuPage = () => {
 
       {!loading && ( // Render only when loading is false
         <ul className="list-group">
-          {menu.map((item) => (
-            <li key={item.id} className="list-group-item">
+          {menu.map(item => (
+            <li key={item.menuitemid} className="list-group-item">
               <div className="row">
                 <div className="col-md-6">
-                  <strong style={{ fontSize: "1.5em" }}>{item.name}</strong>
+                  <strong style={{ fontSize: '1.5em' }}>{item.Name}</strong>
                 </div>
-                <div className="col-md-3" style={{ fontSize: "1.5em" }}>
-                  ${item.price}
+                <div className="col-md-3" style={{ fontSize: '1.5em' }}>
+                  ${item.Price}
                 </div>
               </div>
             </li>
