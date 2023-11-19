@@ -1,22 +1,25 @@
-# Use an official Node runtime as a parent image
-FROM node:16
+# Stage 1: Build the application
+FROM node:16 as builder
 
-# Set the working directory in the container
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # Copy package.json and yarn.lock to the working directory
 COPY package*.json yarn.lock ./
 
-# Install the application dependencies
+# Install dependencies using Yarn
 RUN yarn install
 
-# Copy the application code to the working directory
+# Copy the rest of the application code
 COPY . .
 
-# Expose the port the app runs on
+# Build the application
+RUN yarn build
+
+# Stage 2: Create the production-ready image with Nginx
+FROM nginx
+
+# Expose port 80 for the application
 EXPOSE 80
 
-# Define the command to run your app
-CMD ["yarn", "start"]
-
-ENV NPM_CONFIG_LOGLEVEL warn
+# Copy the build output from the builder stage to Nginx's web root
+COPY --from=builder /app/build /usr/share/nginx/html
