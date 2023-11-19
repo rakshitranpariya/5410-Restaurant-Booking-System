@@ -2,350 +2,62 @@ import https from 'https';
 
 let restaurantsData = null;
 let restaurantName = null;
+let reservationDetails = null;
+
 export const handler = async (event) => {
-    // let restaurantsData = null;
-    // let restaurantName = null;
     try {
         console.log("Received event:");
         console.log(JSON.stringify(event, null, 2));
-        // Ensure that there are interpretations in the event.
+
         if (event && event['interpretations'] && event['interpretations'].length > 0) {
-            const interpretations = event['interpretations'];
-
-            // Initialize variables to track the intent with the highest confidence.
-            let highestConfidence = -1;
-            let selectedIntent = null;
-
-            // Iterate through interpretations to find the intent with the highest nluConfidence.
-            interpretations.forEach((interpretation) => {
-                if (interpretation.intent && interpretation.nluConfidence > highestConfidence) {
-                    highestConfidence = interpretation.nluConfidence;
-                    selectedIntent = interpretation.intent.name;
-                }
-            });
+            const selectedIntent = findHighestConfidenceIntent(event['interpretations']);
 
             if (selectedIntent) {
                 console.log("SELECTED INTENT--------------", selectedIntent);
+
                 switch (selectedIntent) {
                     case "init":
-                        return {
-                            sessionState: {
-                                dialogAction: {
-                                    type: "Close",
-                                    fulfillmentState: "Fulfilled",
-                                },
-                                intent: {
-                                    confirmationState: "Confirmed",
-                                    name: selectedIntent,
-                                    state: "Fulfilled",
-                                },
-                            },
-                            messages: [
-                                {
-                                    contentType: "PlainText",
-                                    content: "How may I help you?",
-                                },
-                            ],
-                        };
+                        await fetchRestaurantData("https://vzgth5nw0m.execute-api.us-east-1.amazonaws.com/prod/getRestaurantData");
+                        return handleInitIntent(selectedIntent);
 
                     case "ReservationInformation":
-                        console.log("Handling ReservationInformation:::::", event);
+                        // await fetchReservationData("https://wvnzmflpyb.execute-api.us-east-1.amazonaws.com/reservation/getallreservations");
                         restaurantName = event['inputTranscript'];
-
-                        const buttons = [
-                            {
-                                text: 'Day',
-                                value: 'day',
-                            },
-                            {
-                                text: 'Week',
-                                value: 'week',
-                            },
-                            {
-                                text: 'Month',
-                                value: 'month',
-                            },
-                        ];
-
-
-                        return {
-                            sessionState: {
-                                dialogAction: {
-                                    type: "Close",
-                                    fulfillmentState: "Fulfilled",
-                                },
-                                intent: {
-                                    confirmationState: "Confirmed",
-                                    name: selectedIntent,
-                                    state: "Fulfilled",
-                                },
-                            },
-                            messages: [
-
-                                {
-                                    contentType: "ImageResponseCard",
-                                    content: "Can you select time period?",
-                                    imageResponseCard: {
-                                        title: restaurantName,
-                                        subtitle: "Select any option from below:",
-                                        buttons
-
-                                    },
-
-                                },
-
-                            ],
-                        };
+                        return handleReservationInformationIntent(selectedIntent);
 
                     case "reservationOfDay":
-                        console.log("Handling TimePeriod:::::", event);
                         let date = event['inputTranscript'];
-
-                        return {
-                            sessionState: {
-                                dialogAction: {
-                                    type: "Close",
-                                    fulfillmentState: "Fulfilled",
-                                },
-                                intent: {
-                                    confirmationState: "Confirmed",
-                                    name: selectedIntent,
-                                    state: "Fulfilled",
-                                },
-                            },
-                            messages: [
-                                {
-                                    contentType: "PlainText",
-                                    content: date,
-                                },
-                                {
-                                    contentType: "PlainText",
-                                    content: "Is there anything else I can help you with?",
-                                },
-                            ],
-                        };
+                        return handleReservationOfDayIntent(date, selectedIntent);
 
                     case "reservationOfMonth":
-                        console.log("Handling TimePeriod:::::", event);
                         let month = event['inputTranscript'];
-
-                        return {
-                            sessionState: {
-                                dialogAction: {
-                                    type: "Close",
-                                    fulfillmentState: "Fulfilled",
-                                },
-                                intent: {
-                                    confirmationState: "Confirmed",
-                                    name: selectedIntent,
-                                    state: "Fulfilled",
-                                },
-                            },
-                            messages: [
-                                {
-                                    contentType: "PlainText",
-                                    content: month,
-                                },
-                                {
-                                    contentType: "PlainText",
-                                    content: "Is there anything else I can help you with?",
-                                },
-                            ],
-                        };
+                        return handleReservationOfMonthIntent(month, selectedIntent);
 
                     case "openingTime":
-                        console.log("Handling opening time:::::", event);
-                        let openingTime = "11 pm";
-                        let openingTimeMessage = `Opening time for ${restaurantName} is ${openingTime}`;
-                        return {
-                            sessionState: {
-                                dialogAction: {
-                                    type: "Close",
-                                    fulfillmentState: "Fulfilled",
-                                },
-                                intent: {
-                                    confirmationState: "Confirmed",
-                                    name: selectedIntent,
-                                    state: "Fulfilled",
-                                },
-                            },
-                            messages: [
-                                {
-                                    contentType: "PlainText",
-                                    content: openingTimeMessage,
-                                },
-                                {
-                                    contentType: "PlainText",
-                                    content: "Is there anything else I can help you with?",
-                                },
-                            ],
-                        };
+                        return handleOpeningTimeIntent(selectedIntent);
+
                     case "editOpeningTime":
-                        console.log("Handling opening time:::::", event);
                         let editedOpeningTime = event['inputTranscript'];
-                        let editedOpeningTimeMessage = `Updated opening time for ${restaurantName} is ${editedOpeningTime}`;
-                        return {
-                            sessionState: {
-                                dialogAction: {
-                                    type: "Close",
-                                    fulfillmentState: "Fulfilled",
-                                },
-                                intent: {
-                                    confirmationState: "Confirmed",
-                                    name: selectedIntent,
-                                    state: "Fulfilled",
-                                },
-                            },
-                            messages: [
-                                {
-                                    contentType: "PlainText",
-                                    content: editedOpeningTimeMessage,
-                                },
-                                {
-                                    contentType: "PlainText",
-                                    content: "Is there anything else I can help you with?",
-                                },
-                            ],
-                        };
+                        return handleEditOpeningTimeIntent(editedOpeningTime, selectedIntent);
 
                     case "restaurantTimeIntent":
-                        console.log("Handling restaurantTimeIntent:::::", event);
-                        let timeInfo = event['inputTranscript'];
-
-                        return {
-                            sessionState: {
-                                dialogAction: {
-                                    type: "Close",
-                                    fulfillmentState: "Fulfilled",
-                                },
-                                intent: {
-                                    confirmationState: "Confirmed",
-                                    name: selectedIntent,
-                                    state: "Fulfilled",
-                                },
-                            },
-                            messages: [
-
-                                {
-                                    contentType: "ImageResponseCard",
-                                    content: "please select any option?",
-                                    imageResponseCard: {
-                                        title: "Operations related opening time",
-                                        subtitle: "Select any option from below:",
-                                        buttons: [
-                                            {
-                                                text: 'View',
-                                                value: 'View time',
-                                            },
-                                            {
-                                                text: 'Edit',
-                                                value: 'Edit time',
-                                            }
-                                        ]
-
-                                    },
-
-                                },
-
-                            ],
-                        };
+                        return handleRestaurantTimeIntent(selectedIntent);
 
                     case "viewLocation":
-                        console.log("Handling opening time:::::", event);
-                        let restaurantLocation = "Halifax";
-                        let restaurantLocationMessage = `Opening time for ${restaurantName} is ${restaurantLocation}`;
-                        return {
-                            sessionState: {
-                                dialogAction: {
-                                    type: "Close",
-                                    fulfillmentState: "Fulfilled",
-                                },
-                                intent: {
-                                    confirmationState: "Confirmed",
-                                    name: selectedIntent,
-                                    state: "Fulfilled",
-                                },
-                            },
-                            messages: [
-                                {
-                                    contentType: "PlainText",
-                                    content: restaurantLocationMessage,
-                                },
-                                {
-                                    contentType: "PlainText",
-                                    content: "Is there anything else I can help you with?",
-                                },
-                            ],
-                        };
+                        return handleViewLocationIntent(selectedIntent);
+
                     case "editLocation":
-                        console.log("Handling opening time:::::", event);
                         let editedLocation = event['inputTranscript'];
-                        let editedLocationMessage = `Updated opening time for ${restaurantName} is ${editedLocation}`;
-                        return {
-                            sessionState: {
-                                dialogAction: {
-                                    type: "Close",
-                                    fulfillmentState: "Fulfilled",
-                                },
-                                intent: {
-                                    confirmationState: "Confirmed",
-                                    name: selectedIntent,
-                                    state: "Fulfilled",
-                                },
-                            },
-                            messages: [
-                                {
-                                    contentType: "PlainText",
-                                    content: editedLocationMessage,
-                                },
-                                {
-                                    contentType: "PlainText",
-                                    content: "Is there anything else I can help you with?",
-                                },
-                            ],
-                        };
+                        return handleEditLocationIntent(editedLocation, selectedIntent);
 
                     case "RestaurantLocationInfo":
-                        console.log("Handling restaurantTimeIntent:::::", event);
-                        let restaurantLocationInfo = event['inputTranscript'];
+                        return handleRestaurantLocationInfoIntent(selectedIntent);
 
-                        return {
-                            sessionState: {
-                                dialogAction: {
-                                    type: "Close",
-                                    fulfillmentState: "Fulfilled",
-                                },
-                                intent: {
-                                    confirmationState: "Confirmed",
-                                    name: selectedIntent,
-                                    state: "Fulfilled",
-                                },
-                            },
-                            messages: [
+                    case "menuAvailability":
+                        return handleMenuAvailabilityIntent(selectedIntent);
 
-                                {
-                                    contentType: "ImageResponseCard",
-                                    content: "please select any option?",
-                                    imageResponseCard: {
-                                        title: "Operations related Location",
-                                        subtitle: "Select any option from below:",
-                                        buttons: [
-                                            {
-                                                text: 'View location',
-                                                value: 'View location',
-                                            },
-                                            {
-                                                text: 'Edit location',
-                                                value: 'Edit location',
-                                            }
-                                        ]
-
-                                    },
-
-                                },
-
-                            ],
-                        };
+                    case "reservationAvailability":
+                        return handleReservationAvailabilityIntent(selectedIntent);
 
                     default:
                         return createUnknownIntentResponse();
@@ -361,9 +73,408 @@ export const handler = async (event) => {
     }
 };
 
+async function fetchDataFromAPI(apiUrl) {
+    return new Promise((resolve, reject) => {
+        https.get(apiUrl, (response) => {
+            let data = '';
+
+            response.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            response.on('end', () => {
+                resolve(data);
+            });
+
+            response.on('error', (error) => {
+                reject(error);
+            });
+        });
+    });
+}
 
 function createUnknownIntentResponse() {
     return {
         // Your response for unknown or unsupported intents
+    };
+}
+
+async function fetchRestaurantData(apiUrl) {
+    const data = await fetchDataFromAPI(apiUrl);
+    restaurantsData = JSON.parse(data);
+    console.log("restaurantsData:::", restaurantsData);
+}
+
+async function fetchReservationData(apiUrl) {
+    const data = await fetchDataFromAPI(apiUrl);
+    reservationDetails = JSON.parse(data);
+    console.log("reservationDetails:::", reservationDetails);
+}
+
+function findHighestConfidenceIntent(interpretations) {
+    let highestConfidence = -1;
+    let selectedIntent = null;
+
+    interpretations.forEach((interpretation) => {
+        if (interpretation.intent && interpretation.nluConfidence > highestConfidence) {
+            highestConfidence = interpretation.nluConfidence;
+            selectedIntent = interpretation.intent.name;
+        }
+    });
+
+    return selectedIntent;
+}
+
+function handleInitIntent(selectedIntent) {
+    return {
+        sessionState: {
+            dialogAction: {
+                type: "Close",
+                fulfillmentState: "Fulfilled",
+            },
+            intent: {
+                confirmationState: "Confirmed",
+                name: selectedIntent,
+                state: "Fulfilled",
+            },
+        },
+        messages: [
+            {
+                contentType: "PlainText",
+                content: "How may I help you?",
+            },
+        ],
+    };
+}
+
+function handleReservationInformationIntent(selectedIntent) {
+    const buttons = [
+        {
+            text: 'Day',
+            value: 'day',
+        },
+        {
+            text: 'Week',
+            value: 'week',
+        },
+        {
+            text: 'Month',
+            value: 'month',
+        },
+    ];
+
+    return {
+        sessionState: {
+            dialogAction: {
+                type: "Close",
+                fulfillmentState: "Fulfilled",
+            },
+            intent: {
+                confirmationState: "Confirmed",
+                name: selectedIntent,
+                state: "Fulfilled",
+            },
+        },
+        messages: [
+            {
+                contentType: "ImageResponseCard",
+                content: restaurantName,
+                imageResponseCard: {
+                    title: "Can you select time period?",
+                    subtitle: "Select any option from below:",
+                    buttons
+                },
+            },
+        ],
+    };
+}
+
+function handleReservationOfDayIntent(date, selectedIntent) {
+    return {
+        sessionState: {
+            dialogAction: {
+                type: "Close",
+                fulfillmentState: "Fulfilled",
+            },
+            intent: {
+                confirmationState: "Confirmed",
+                name: selectedIntent,
+                state: "Fulfilled",
+            },
+        },
+        messages: [
+            {
+                contentType: "PlainText",
+                content: date,
+            },
+            {
+                contentType: "PlainText",
+                content: "Is there anything else I can help you with?",
+            },
+        ],
+    };
+}
+
+function handleReservationOfMonthIntent(month, selectedIntent) {
+    return {
+        sessionState: {
+            dialogAction: {
+                type: "Close",
+                fulfillmentState: "Fulfilled",
+            },
+            intent: {
+                confirmationState: "Confirmed",
+                name: selectedIntent,
+                state: "Fulfilled",
+            },
+        },
+        messages: [
+            {
+                contentType: "PlainText",
+                content: month,
+            },
+            {
+                contentType: "PlainText",
+                content: "Is there anything else I can help you with?",
+            },
+        ],
+    };
+}
+
+function handleOpeningTimeIntent(selectedIntent) {
+    let openingTime = "11 pm";
+    let openingTimeMessage = `Opening time for ${restaurantName} is ${openingTime}`;
+    return {
+        sessionState: {
+            dialogAction: {
+                type: "Close",
+                fulfillmentState: "Fulfilled",
+            },
+            intent: {
+                confirmationState: "Confirmed",
+                name: selectedIntent,
+                state: "Fulfilled",
+            },
+        },
+        messages: [
+            {
+                contentType: "PlainText",
+                content: openingTimeMessage,
+            },
+            {
+                contentType: "PlainText",
+                content: "Is there anything else I can help you with?",
+            },
+        ],
+    };
+}
+
+function handleEditOpeningTimeIntent(editedOpeningTime, selectedIntent) {
+    let editedOpeningTimeMessage = `Updated opening time for ${restaurantName} is ${editedOpeningTime}`;
+    return {
+        sessionState: {
+            dialogAction: {
+                type: "Close",
+                fulfillmentState: "Fulfilled",
+            },
+            intent: {
+                confirmationState: "Confirmed",
+                name: selectedIntent,
+                state: "Fulfilled",
+            },
+        },
+        messages: [
+            {
+                contentType: "PlainText",
+                content: editedOpeningTimeMessage,
+            },
+            {
+                contentType: "PlainText",
+                content: "Is there anything else I can help you with?",
+            },
+        ],
+    };
+}
+
+function handleRestaurantTimeIntent(selectedIntent) {
+    return {
+        sessionState: {
+            dialogAction: {
+                type: "Close",
+                fulfillmentState: "Fulfilled",
+            },
+            intent: {
+                confirmationState: "Confirmed",
+                name: selectedIntent,
+                state: "Fulfilled",
+            },
+        },
+        messages: [
+            {
+                contentType: "ImageResponseCard",
+                content: "please select any option?",
+                imageResponseCard: {
+                    title: "Operations related opening time",
+                    subtitle: "Select any option from below:",
+                    buttons: [
+                        {
+                            text: 'View',
+                            value: 'View time',
+                        },
+                        {
+                            text: 'Edit',
+                            value: 'Edit time',
+                        },
+                    ]
+                },
+            },
+        ],
+    };
+}
+
+function handleViewLocationIntent(selectedIntent) {
+    let restaurantLocation = "Halifax";
+    let restaurantLocationMessage = `Location of ${restaurantName} is ${restaurantLocation}`;
+    return {
+        sessionState: {
+            dialogAction: {
+                type: "Close",
+                fulfillmentState: "Fulfilled",
+            },
+            intent: {
+                confirmationState: "Confirmed",
+                name: selectedIntent,
+                state: "Fulfilled",
+            },
+        },
+        messages: [
+            {
+                contentType: "PlainText",
+                content: restaurantLocationMessage,
+            },
+            {
+                contentType: "PlainText",
+                content: "Is there anything else I can help you with?",
+            },
+        ],
+    };
+}
+
+function handleEditLocationIntent(editedLocation, selectedIntent) {
+    let editedLocationMessage = `Updated location of ${restaurantName} is ${editedLocation}`;
+    return {
+        sessionState: {
+            dialogAction: {
+                type: "Close",
+                fulfillmentState: "Fulfilled",
+            },
+            intent: {
+                confirmationState: "Confirmed",
+                name: selectedIntent,
+                state: "Fulfilled",
+            },
+        },
+        messages: [
+            {
+                contentType: "PlainText",
+                content: editedLocationMessage,
+            },
+            {
+                contentType: "PlainText",
+                content: "Is there anything else I can help you with?",
+            },
+        ],
+    };
+}
+
+function handleRestaurantLocationInfoIntent(selectedIntent) {
+    return {
+        sessionState: {
+            dialogAction: {
+                type: "Close",
+                fulfillmentState: "Fulfilled",
+            },
+            intent: {
+                confirmationState: "Confirmed",
+                name: selectedIntent,
+                state: "Fulfilled",
+            },
+        },
+        messages: [
+            {
+                contentType: "ImageResponseCard",
+                content: "please select any option?",
+                imageResponseCard: {
+                    title: "Operations related Location",
+                    subtitle: "Select any option from below:",
+                    buttons: [
+                        {
+                            text: 'View location',
+                            value: 'View location',
+                        },
+                        {
+                            text: 'Edit location',
+                            value: 'Edit location',
+                        },
+                    ]
+                },
+            },
+        ],
+    };
+}
+
+function handleMenuAvailabilityIntent(selectedIntent) {
+    let menu = "menu list";
+    let menuMessage = `Menu of ${restaurantName} is ${menu}`;
+    return {
+        sessionState: {
+            dialogAction: {
+                type: "Close",
+                fulfillmentState: "Fulfilled",
+            },
+            intent: {
+                confirmationState: "Confirmed",
+                name: selectedIntent,
+                state: "Fulfilled",
+            },
+        },
+        messages: [
+            {
+                contentType: "PlainText",
+                content: menuMessage,
+            },
+            {
+                contentType: "PlainText",
+                content: "Is there anything else I can help you with?",
+            },
+        ],
+    };
+}
+
+function handleReservationAvailabilityIntent(selectedIntent) {
+    let reservation = "reservation list";
+    let reservationMessage = `Reservation availability of ${restaurantName} is ${reservation}`;
+    return {
+        sessionState: {
+            dialogAction: {
+                type: "Close",
+                fulfillmentState: "Fulfilled",
+            },
+            intent: {
+                confirmationState: "Confirmed",
+                name: selectedIntent,
+                state: "Fulfilled",
+            },
+        },
+        messages: [
+            {
+                contentType: "PlainText",
+                content: reservationMessage,
+            },
+            {
+                contentType: "PlainText",
+                content: "Is there anything else I can help you with?",
+            },
+        ],
     };
 }
