@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { Button, Form, Input, Layout, Radio, theme } from 'antd';
+import { Button, Form, Input, Layout, Radio, theme, notification } from 'antd';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import GoogleButton from 'react-google-button';
 import useSimpleReactValidator from '../../helpers/useReactSimpleValidator';
 import { googleLogin, register } from '../../redux/actions/authActions';
 import './register.css';
-import notification from '../../constants/notification';
 
 const { Content } = Layout;
 
@@ -56,8 +55,12 @@ const Register = () => {
       if (validator.fieldValid('Type')) {
         await dispatch(googleLogin(fields));
       } else {
-        validator.getErrorMessages();
-        setValidator(true);
+        notification.warning({
+          message: 'Warning',
+          description: 'Please select the Account type first!',
+        });
+        // validator.getErrorMessages();
+        // setValidator(true);
       }
     } catch (err) {
       console.log(err);
