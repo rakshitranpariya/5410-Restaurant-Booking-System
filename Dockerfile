@@ -23,3 +23,4 @@ EXPOSE 80
 
 # Copy the build output from the builder stage to Nginx's web root
 COPY --from=builder /app/build /usr/share/nginx/html
+
