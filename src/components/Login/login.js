@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { Button, Form, Input, Layout, theme, Radio } from 'antd';
+import { Button, Form, Input, Layout, theme, Radio, notification } from 'antd';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import GoogleButton from 'react-google-button';
 import useSimpleReactValidator from '../../helpers/useReactSimpleValidator';
 import { googleLogin, login } from '../../redux/actions/authActions';
 import './login.css';
-import notification from '../../constants/notification';
 import { handleSidebarChange } from '../../redux/actions/sidebarAction';
 
 const { Content } = Layout;
@@ -66,8 +65,12 @@ const Login = () => {
           throw new Error('login failed');
         }
       } else {
-        validator.showMessageFor('Type');
-        setValidator(true);
+        notification.warning({
+          message: 'Warning',
+          description: 'Please select the Account type first!',
+        });
+        // validator.showMessageFor('Type');
+        // setValidator(true);
       }
     } catch (err) {
       console.log(err);
