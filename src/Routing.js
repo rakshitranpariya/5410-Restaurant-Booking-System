@@ -60,9 +60,7 @@ const Routing = () => {
     {
       path: '/dashboard',
       component: <Dashboard />,
-      type:'2'
-
-
+      type: '2',
     },
   ].filter(cur => cur && String(cur.type) == String(user.type));
 
