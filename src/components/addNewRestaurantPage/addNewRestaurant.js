@@ -26,7 +26,7 @@ const NewRestaurantListing = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-
+    console.log('Form Data:', formData);
     try {
       const response = await axios.post(
         'https://vzgth5nw0m.execute-api.us-east-1.amazonaws.com/prod/addRestaurantData',
@@ -63,7 +63,7 @@ const NewRestaurantListing = () => {
             <div className="mb-3 text-start">
               <label className="form-label">Opening Hours:</label>
               <input
-                type="text"
+                type="time"
                 name="openingHours"
                 value={formData.openingHours}
                 onChange={handleChange}
@@ -74,7 +74,7 @@ const NewRestaurantListing = () => {
             <div className="mb-3 text-start">
               <label className="form-label">Closing Hours:</label>
               <input
-                type="text"
+                type="time"
                 name="closingHours"
                 value={formData.closingHours}
                 onChange={handleChange}

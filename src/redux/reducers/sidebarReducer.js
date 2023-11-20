@@ -28,6 +28,13 @@ const initialState = {
       type: '2',
     },
     {
+      key: '/restaurantListing',
+      label: 'Restaurants',
+      icon: <UserOutlined />,
+      url: '/restaurantListing',
+      type: '1',
+    },
+    {
       key: '/addRestaurantDetails',
       label: 'Edit Restaurant Details',
       icon: <EditOutlined />,
