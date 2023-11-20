@@ -12,6 +12,11 @@ const Register = lazy(() => import('./components/Register/register'));
 const RestaurantListing = lazy(() =>
   import('./components/RestaurantListing/P_RestaurantListingPage')
 );
+const NewRestaurantListing = lazy(() =>
+  import('./components/addNewRestaurantPage/addNewRestaurant')
+);
+const NewMenuEntry = lazy(() => import('./components/addNewMenuPage/addNewMenu'));
+const RestaurantTableForm = lazy(() => import('./components/addNewTablePage/addNewTable'));
 const MenuPage = lazy(() => import('./components/MenuListing/P_MenulistingPage'));
 const ReservationListing = lazy(() => import('./components/ReservationListing/reservationListing'));
 const PageNotFound = lazy(() => import('./shared/404'));
@@ -60,9 +65,22 @@ const Routing = () => {
     {
       path: '/dashboard',
       component: <Dashboard />,
-      type:'2'
-
-
+      type: '2',
+    },
+    {
+      path: '/addRestaurantDetails',
+      component: <NewRestaurantListing />,
+      type: '2',
+    },
+    {
+      path: '/addMenuDetails',
+      component: <NewMenuEntry />,
+      type: '2',
+    },
+    {
+      path: '/addTableDetails',
+      component: <RestaurantTableForm />,
+      type: '2',
     },
   ].filter(cur => cur && String(cur.type) == String(user.type));
 
