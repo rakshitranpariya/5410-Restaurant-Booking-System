@@ -5,6 +5,7 @@ import { Layout } from 'antd';
 import Loader from './shared/loader';
 
 const Dashboard = lazy(() => import('./components/Dashboard/dashboard'));
+const TopCustomer = lazy(() => import('./components/admin/TopCustomer'));
 const Sidebar = lazy(() => import('./shared/sidebar'));
 const Login = lazy(() => import('./components/Login/login'));
 const Restaurant = lazy(() => import('./components/Restaurant/restaurant'));
@@ -12,11 +13,6 @@ const Register = lazy(() => import('./components/Register/register'));
 const RestaurantListing = lazy(() =>
   import('./components/RestaurantListing/P_RestaurantListingPage')
 );
-const NewRestaurantListing = lazy(() =>
-  import('./components/addNewRestaurantPage/addNewRestaurant')
-);
-const NewMenuEntry = lazy(() => import('./components/addNewMenuPage/addNewMenu'));
-const RestaurantTableForm = lazy(() => import('./components/addNewTablePage/addNewTable'));
 const MenuPage = lazy(() => import('./components/MenuListing/P_MenulistingPage'));
 const ReservationListing = lazy(() => import('./components/ReservationListing/reservationListing'));
 const PageNotFound = lazy(() => import('./shared/404'));
@@ -65,22 +61,12 @@ const Routing = () => {
     {
       path: '/dashboard',
       component: <Dashboard />,
-      type: '2',
+      type: '2'
     },
     {
-      path: '/addRestaurantDetails',
-      component: <NewRestaurantListing />,
-      type: '2',
-    },
-    {
-      path: '/addMenuDetails',
-      component: <NewMenuEntry />,
-      type: '2',
-    },
-    {
-      path: '/addTableDetails',
-      component: <RestaurantTableForm />,
-      type: '2',
+      path: '/adminView',
+      component: <TopCustomer />,
+      type: '1'
     },
   ].filter(cur => cur && String(cur.type) == String(user.type));
 
