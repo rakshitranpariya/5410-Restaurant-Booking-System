@@ -42,17 +42,24 @@ const initialState = {
       type: '2',
     },
     {
-      key: '/addMenuDetails',
+      key: '/menuListingADMIN',
       label: 'Edit Menu Items',
       icon: <EditOutlined />,
-      url: '/addMenuDetails',
+      url: '/menuListingADMIN',
       type: '2',
     },
     {
       key: '/addTableDetails',
-      label: 'Edit tables',
+      label: 'Add New tables',
       icon: <EditOutlined />,
       url: '/addTableDetails',
+      type: '2',
+    },
+    {
+      key: '/tableListingAdmin',
+      label: 'Edit tables',
+      icon: <EditOutlined />,
+      url: '/tableListingAdmin',
       type: '2',
     },
     {

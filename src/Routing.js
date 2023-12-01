@@ -19,6 +19,9 @@ const NewMenuEntry = lazy(() => import('./components/addNewMenuPage/addNewMenu')
 const RestaurantTableForm = lazy(() => import('./components/addNewTablePage/addNewTable'));
 const MenuPage = lazy(() => import('./components/MenuListing/P_MenulistingPage'));
 const ReservationListing = lazy(() => import('./components/ReservationListing/reservationListing'));
+const MenuItemComponent = lazy(() => import('./components/MenuListingAdmin/menuListingAdmin'));
+const RestaurantTablesPage = lazy(() => import('./components/TableListingAdmin/TableListingPage'));
+
 const PageNotFound = lazy(() => import('./shared/404'));
 const { Content } = Layout;
 
@@ -80,6 +83,16 @@ const Routing = () => {
     {
       path: '/addTableDetails',
       component: <RestaurantTableForm />,
+      type: '2',
+    },
+    {
+      path: '/menuListingADMIN',
+      component: <MenuItemComponent />,
+      type: '2',
+    },
+    {
+      path: '/tableListingAdmin',
+      component: <RestaurantTablesPage />,
       type: '2',
     },
   ].filter(cur => cur && String(cur.type) == String(user.type));
