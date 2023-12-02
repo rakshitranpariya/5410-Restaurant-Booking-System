@@ -1,4 +1,4 @@
-import { UserOutlined, LogoutOutlined, EditOutlined } from '@ant-design/icons';
+import { UserOutlined, LogoutOutlined,EditOutlined } from '@ant-design/icons';
 
 const initialState = {
   isCollapsed: false,
@@ -28,11 +28,11 @@ const initialState = {
       type: '2',
     },
     {
-      key: '/restaurantListing',
-      label: 'Restaurants',
+      key: '/adminView',
+      label: 'Admin',
       icon: <UserOutlined />,
-      url: '/restaurantListing',
-      type: '1',
+      url: '/adminView',
+      type: '3',
     },
     {
       key: '/addRestaurantDetails',

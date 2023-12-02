@@ -21,7 +21,9 @@ function Dashboard() {
 
     const [loading, setLoading] = useState(false)
     const restaurantOwnerId = useSelector((state) => state?.auth?.user?.id)
-    
+    // const restaurantOwnerId = "gsSTivkk02fxi9xcdXfj"
+
+
     const [reservations, setReservations] = useState([]);
     const [chartDataForToday, setChartDataForToday] = useState([])
     const [chartDataForMonthly, setChartDataForMonthly] = useState([])
@@ -48,7 +50,7 @@ function Dashboard() {
 
 
     const handleApplyfilter = () => {
-        
+
         const toDate = moment(new Date(filterDates.toDate)).format("YYYY-MM-DD")
         const fromDate = moment(new Date(filterDates.fromDate)).format("YYYY-MM-DD")
         let filterData = chartData.filter((f) => moment(new Date(f.data.reservationDate)).format("YYYY-MM-DD") >= fromDate && moment(new Date(f.data.reservationDate)).format("YYYY-MM-DD") <= toDate)
@@ -61,7 +63,7 @@ function Dashboard() {
 
 
     useEffect(() => {
-        
+
         fetchChartData();
 
     }, [])
@@ -112,7 +114,7 @@ function Dashboard() {
 
     const fetchChartData = async () => {
         try {
-            
+
             let url = "https://wvnzmflpyb.execute-api.us-east-1.amazonaws.com/reservation/getallreservations"
 
 
@@ -120,7 +122,7 @@ function Dashboard() {
             let data = await axios.get(url)
 
 
-            
+
             let jsonFilterData = JSON.parse(data?.data?.body)
             let filterData = jsonFilterData?.filter((f) => f.data.restaurantid == restaurantOwnerId)
 
@@ -187,14 +189,14 @@ function Dashboard() {
 
             let data = await axios.post(url, config.data, config.headers)
 
-            
+
             let TodayDate = moment(new Date()).format("YYYY-MM-DD")
-            
+
             let ReservationData = data?.data?.body?.outdata?.filter((f) => f.data.restaurantid == restaurantOwnerId)
             let filterData = data?.data?.body?.outdata?.filter((f) => f.data.restaurantid == restaurantOwnerId)
             let restaurentData = data?.data?.body?.outdata.filter((f) => f.data.restaurantid == restaurantOwnerId)
             let restaurentDataToday = data?.data?.body?.outdata.filter((f) => f.data.restaurantid == restaurantOwnerId && moment(f.data.reservationDate).format("YYYY-MM-DD") == moment(selectedDay).format("YYYY-MM-DD"))
-           
+
             let valueDateMorning = moment("12:00", 'HH:mm a').format('HH:mm a')
             let filterDataMorning = restaurentDataToday?.filter((f) => moment(f?.data?.reservationTime, 'HH:mm a').format('HH:mm a') <= valueDateMorning
             )
@@ -242,19 +244,19 @@ function Dashboard() {
             let ChartDataToday = [
                 {
                     name: "12:00 AM - 12:00 PM ",
-                    "Table Booked": MorningTotal
+                    "Table Booked For": MorningTotal
                 },
                 {
                     name: "12:00 PM - 03:00 PM ",
-                    "Table Booked": NoonTotal
+                    "Table Booked For": NoonTotal
                 },
                 {
                     name: "03:00 PM - 06:00 PM ",
-                    "Table Booked": EveningTotal
+                    "Table Booked For": EveningTotal
                 },
                 {
                     name: "06:00 PM - 11:59 PM ",
-                    "Table Booked": NightTotal
+                    "Table Booked For": NightTotal
                 },
             ]
             let filterDataJan = restaurentData?.filter((f) => moment(f?.data?.reservationDate).format("YYYY-MM-DD") >= moment(`${selectedYear.getFullYear()}-01-01`).format("YYYY-MM-DD") && moment(f?.data?.reservationDate).format("YYYY-MM-DD") < moment(`${selectedYear.getFullYear()}-02-01`).format("YYYY-MM-DD"))
@@ -345,61 +347,61 @@ function Dashboard() {
 
             });
 
-           
+
             let TotalBookingTillNow = 0
             restaurentData.forEach(element => {
                 TotalBookingTillNow += Number(element.data.numberOfGuests)
 
             });
-            
+
             let ChartDataMonthly = [
                 {
                     name: "Jan",
-                    "Table Booked": JanTotal
+                    "Table Booked For": JanTotal
                 },
                 {
                     name: "Fab",
-                    "Table Booked": FabTotal
+                    "Table Booked For": FabTotal
                 },
                 {
                     name: "March",
-                    "Table Booked": MarchTotal
+                    "Table Booked For": MarchTotal
                 },
                 {
                     name: "April",
-                    "Table Booked": AprilTotal
+                    "Table Booked For": AprilTotal
                 },
                 {
                     name: "May",
-                    "Table Booked": MayTotal
+                    "Table Booked For": MayTotal
                 },
                 {
                     name: "Jun",
-                    "Table Booked": JunTotal
+                    "Table Booked For": JunTotal
                 },
                 {
                     name: "July",
-                    "Table Booked": JulyTotal
+                    "Table Booked For": JulyTotal
                 },
                 {
                     name: "Aug",
-                    "Table Booked": AugTotal
+                    "Table Booked For": AugTotal
                 },
                 {
                     name: "Sep",
-                    "Table Booked": SepTotal
+                    "Table Booked For": SepTotal
                 },
                 {
                     name: "Oct",
-                    "Table Booked": OctTotal
+                    "Table Booked For": OctTotal
                 },
                 {
                     name: "Nov",
-                    "Table Booked": NovTotal
+                    "Table Booked For": NovTotal
                 },
                 {
                     name: "Dec",
-                    "Table Booked": DescTotal
+                    "Table Booked For": DescTotal
                 },
             ]
 
@@ -456,37 +458,37 @@ function Dashboard() {
             let ChartDataWeekly = [
                 {
                     name: "Sun",
-                    "Table Booked": SunBooking
+                    "Table Booked For": SunBooking
 
                 },
                 {
                     name: "Mon",
-                    "Table Booked": MonBooking
+                    "Table Booked For": MonBooking
                 },
                 {
                     name: "Tue",
-                    "Table Booked": TueBooking
+                    "Table Booked For": TueBooking
                 },
                 {
                     name: "Wed",
-                    "Table Booked": WedBooking
+                    "Table Booked For": WedBooking
                 },
                 {
                     name: "Thu",
-                    "Table Booked": ThuBooking
+                    "Table Booked For": ThuBooking
                 },
                 {
                     name: "Fri",
-                    "Table Booked": FriBooking
+                    "Table Booked For": FriBooking
                 },
                 {
                     name: "Sat",
-                    "Table Booked": SatBooking
+                    "Table Booked For": SatBooking
                 }
 
             ]
 
-            
+
             setChartDataForToday(ChartDataToday)
             setChartDataForMonthly(ChartDataMonthly)
             setChartDataForWeekly(ChartDataWeekly)
@@ -540,7 +542,7 @@ function Dashboard() {
                                 }}
 
                                 style={{
-                                    
+
 
                                     width: 150,
                                     cursor: "pointer",
@@ -549,7 +551,7 @@ function Dashboard() {
                             >
                                 <CardBody>
                                     <div className="text-value text-center text-light">
-                                        {}
+                                        { }
                                         {reservations.filter((f) => f.data.restaurantid == restaurantOwnerId && moment(f.data.reservationDate).format("YYYY-MM-DD") == moment(new Date()).format("YYYY-MM-DD"))?.length
 
 
@@ -565,7 +567,7 @@ function Dashboard() {
 
                             <Card
                                 aria-disabled
-                                
+
                                 onClick={() => {
 
 
@@ -585,7 +587,7 @@ function Dashboard() {
                             >
                                 <CardBody>
                                     <div className="text-value text-center text-light">
-                                        {}
+                                        { }
                                         {reservations.filter((f) => f.data.restaurantid == restaurantOwnerId && moment(f?.data?.reservationDate).format("YYYY-MM-DD") >= moment(`${new Date()}`).format("YYYY-MM-DD") && moment(f?.data?.reservationDate).format("YYYY-MM-DD") <= moment(`${endDateinitail}`).format("YYYY-MM-DD"))?.length
 
 
@@ -601,7 +603,7 @@ function Dashboard() {
 
                             <Card
                                 aria-disabled
-                                
+
                                 onClick={() => {
 
 
@@ -621,7 +623,7 @@ function Dashboard() {
                             >
                                 <CardBody>
                                     <div className="text-value text-center text-light">
-                                        {}
+                                        { }
                                         {reservations.filter((f) => f.data.restaurantid == restaurantOwnerId && moment(f?.data?.reservationDate).format("YYYY-MM-DD") >= moment(`${new Date().getFullYear()}-01-01`).format("YYYY-MM-DD") && moment(f?.data?.reservationDate).format("YYYY-MM-DD") < moment(`${new Date().getFullYear()}-12-31`).format("YYYY-MM-DD"))?.length
 
 
@@ -724,7 +726,7 @@ function Dashboard() {
                                     {/* {} */}
                                     <span>Total Number of Guests: </span>
                                     {
-                                        chartDataForToday.map(m => m["Table Booked"]).reduce((accumulator, currentValue) => {
+                                        chartDataForToday.map(m => m["Table Booked For"]).reduce((accumulator, currentValue) => {
                                             return accumulator + currentValue
                                         }, 0)
 
@@ -750,7 +752,7 @@ function Dashboard() {
                                     <YAxis />
                                     <Tooltip />
                                     <Legend />
-                                    <Bar dataKey="Table Booked" fill="#82ca9d" activeBar={<Rectangle fill="gold" stroke="purple" />} />
+                                    <Bar dataKey="Table Booked For" fill="#82ca9d" activeBar={<Rectangle fill="gold" stroke="purple" />} />
                                 </BarChart>
                             </ResponsiveContainer>}
                         </div>
@@ -806,7 +808,7 @@ function Dashboard() {
                                     <YAxis />
                                     <Tooltip />
                                     <Legend />
-                                    <Bar dataKey="Table Booked" fill="#82ca9d" activeBar={<Rectangle fill="gold" stroke="purple" />} />
+                                    <Bar dataKey="Table Booked For" fill="#82ca9d" activeBar={<Rectangle fill="gold" stroke="purple" />} />
                                 </BarChart>
                             </ResponsiveContainer>
 
@@ -823,7 +825,7 @@ function Dashboard() {
                                     {/* {} */}
                                     <span>Total Number of Guests: </span>
                                     {
-                                        chartDataForMonthly.map(m => m["Table Booked"]).reduce((accumulator, currentValue) => {
+                                        chartDataForMonthly.map(m => m["Table Booked For"]).reduce((accumulator, currentValue) => {
                                             return accumulator + currentValue
                                         }, 0)
 
@@ -852,7 +854,7 @@ function Dashboard() {
                                     <YAxis />
                                     <Tooltip />
                                     <Legend />
-                                    <Bar dataKey="Table Booked" fill="#82ca9d" activeBar={<Rectangle fill="gold" stroke="purple" />} />
+                                    <Bar dataKey="Table Booked For" fill="#82ca9d" activeBar={<Rectangle fill="gold" stroke="purple" />} />
                                 </BarChart>
                             </ResponsiveContainer>
 
@@ -864,7 +866,7 @@ function Dashboard() {
 
 
                     {filterDates.fromDate && <p className='text-center ' > Filter applied: result shown from <b>{filterDates.fromDate}</b> to <b>{filterDates.toDate}</b> </p>}
-                    {}
+                    { }
                     {false && <Table bordered>
                         <thead>
                             <tr>
@@ -874,7 +876,7 @@ function Dashboard() {
                                 <th>
                                     Customer Name
                                 </th>
-                                {}
+                                { }
                                 <th>
                                     Date
                                 </th>
@@ -884,11 +886,11 @@ function Dashboard() {
                                 <th>
                                     Number of Person(s)
                                 </th>
-                                {}
+                                { }
                                 <th>
                                     Booking Status
                                 </th>
-                                {}
+                                { }
                             </tr>
                         </thead>
                         { }
