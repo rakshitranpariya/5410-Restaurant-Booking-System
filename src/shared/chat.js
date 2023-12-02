@@ -5,6 +5,7 @@ class KommunicateChat extends Component {
     const accessToken = localStorage.getItem('accessToken');
     const userType = localStorage.getItem('userType');
     let apiId;
+    
     if(userType == 1) {
         apiId = "2b5873eace4273972e5d3ddbf604693f5";
     } else if(userType == 2){

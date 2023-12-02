@@ -12,6 +12,7 @@ const App = () => {
   const [isLoaded, setLoaded] = useState(false);
   const accessToken = localStorage.getItem('accessToken');
   const userType = localStorage.getItem('userType');
+  console.log("userType:::", userType);
   useEffect(() => {
     (async () => {
         if(userType == 1) {
