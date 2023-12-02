@@ -1,0 +1,16 @@
+steps:
+  # Docker Build
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+            'build',
+            '-t',
+            'us-central1-docker.pkg.dev/sdp-firestore-lab/serverless-images/sdp-1',
+            '.'
+          ]
+
+  # Docker push to Google Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push',  'us-central1-docker.pkg.dev/sdp-firestore-lab/serverless-images/sdp-1']
+
+images:
+  - 'us-central1-docker.pkg.dev/sdp-firestore-lab/serverless-images/sdp-1'

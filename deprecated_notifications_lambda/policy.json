@@ -1,0 +1,18 @@
+{
+    "Version": "2012-10-17",
+    "Id": "PublisihPolicy",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Principal": "*",
+        "Action": "sns:Publish",
+        "Resource": "arn:aws:sns:us-east-1:315128346896:offer-notif",
+        "Condition": {
+          "ArnEquals": {
+            "aws:SourceArn": "arn:aws:sqs:us-east-1:315128346896:offer-queue"
+          }
+        }
+      }
+    ]
+  }
+  

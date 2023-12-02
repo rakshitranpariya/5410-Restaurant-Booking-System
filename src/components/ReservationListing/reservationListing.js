@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Layout, Table, Tooltip } from 'antd';
+import { Layout, Table, Tag, Tooltip } from 'antd';
 import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import { useSelector } from 'react-redux';
 import { db } from '../../helpers/firebase-config';
@@ -7,38 +7,12 @@ import Approve from '../../assets/check.png';
 import Reject from '../../assets/delete-button.png';
 import Loader from '../../shared/loader';
 import './reservationListing.css';
+import ApiUtils from '../../helpers/APIUtils';
 
+const api = () => new ApiUtils();
 const { Content } = Layout;
 
 const reservationCollectionRef = collection(db, 'reservations');
-
-const data = [
-  {
-    key: '1',
-    firstName: 'John',
-    lastName: 'Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    tags: ['nice', 'developer'],
-  },
-  {
-    key: '2',
-    firstName: 'Jim',
-    lastName: 'Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    tags: ['loser'],
-  },
-  {
-    key: '3',
-    firstName: 'Joe',
-    lastName: 'Black',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-];
-
 const ReservationListing = () => {
   const [allData, setAllData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -47,6 +21,8 @@ const ReservationListing = () => {
   const getData = async () => {
     try {
       setIsLoading(true);
+      const res = await api().getTableData({ restaurantId: user.id });
+      console.log(res);
       const searchQuery = await query(
         reservationCollectionRef,
         where('restaurantid', '==', user.id)
@@ -59,6 +35,8 @@ const ReservationListing = () => {
           ...doc.data(),
         };
       });
+
+      console.log(dataArray);
 
       setAllData(dataArray);
       localStorage.setItem('reservations', JSON.stringify(dataArray));
@@ -89,9 +67,6 @@ const ReservationListing = () => {
 
   useEffect(() => {
     (async () => {
-      // const data = localStorage.getItem('reservations');
-      //
-      // setAllData(JSON.parse(data));
       await getData();
     })();
   }, []);
@@ -117,20 +92,20 @@ const ReservationListing = () => {
       dataIndex: 'reservationTime',
       key: 'reservationTime',
     },
-    // {
-    //   title: 'Tags',
-    //   dataIndex: 'tags',
-    //   key: 'tags',
-    //   render: tags => (
-    //     <>
-    //       {tags.map(tag => (
-    //         <Tag color="blue" key={tag}>
-    //           {tag}
-    //         </Tag>
-    //       ))}
-    //     </>
-    //   ),
-    // },
+    {
+      title: 'Menu Items',
+      dataIndex: 'menuitemid',
+      key: 'menuitemid',
+      render: tags => (
+        <>
+          {tags.map(tag => (
+            <Tag color="blue" key={tag.menuitemid}>
+              {tag.itemName}
+            </Tag>
+          ))}
+        </>
+      ),
+    },
     {
       title: 'Action',
       key: 'action',
