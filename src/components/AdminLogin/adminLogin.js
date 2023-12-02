@@ -1,16 +1,15 @@
 import { useState } from 'react';
-import { Button, Form, Input, Layout, theme, Radio, notification } from 'antd';
+import { Button, Form, Input, Layout, theme } from 'antd';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import GoogleButton from 'react-google-button';
 import useSimpleReactValidator from '../../helpers/useReactSimpleValidator';
-import { googleLogin, login } from '../../redux/actions/authActions';
-import './login.css';
+import './adminLogin.css';
 import { handleSidebarChange } from '../../redux/actions/sidebarAction';
+import { login } from '../../redux/actions/authActions';
 
 const { Content } = Layout;
 
-const Login = () => {
+const AdminLogin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -22,7 +21,7 @@ const Login = () => {
   const [fields, setFields] = useState({
     email: null,
     password: null,
-    type: null,
+    type: '3',
   });
 
   const [validator, setValidator] = useSimpleReactValidator(
@@ -50,44 +49,15 @@ const Login = () => {
     }));
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      if (validator.fieldValid('Type')) {
-        const res = await dispatch(googleLogin(fields));
-        if (res) {
-          fields.type.toString() === '1'
-            ? await dispatch(handleSidebarChange('/restaurantListing'))
-            : await dispatch(handleSidebarChange('/reservationListing'));
-          fields.type.toString() === '1'
-            ? navigate('/restaurantListing')
-            : navigate('/reservationListing');
-        } else {
-          throw new Error('login failed');
-        }
-      } else {
-        notification.warning({
-          message: 'Warning',
-          description: 'Please select the Account type first!',
-        });
-        // validator.showMessageFor('Type');
-        // setValidator(true);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const handleSubmit = async () => {
     setLoading(true);
     if (validator.allValid()) {
       try {
         const res = await dispatch(login(fields));
         if (res) {
-          await dispatch(handleSidebarChange('/restaurantListing'));
+          await dispatch(handleSidebarChange('/admin/dashboard'));
           setLoading(false);
-          fields.type.toString() === '1'
-            ? navigate('/restaurantListing')
-            : navigate('/reservationListing');
+          navigate('/admin/dashboard')
         } else {
           throw new Error('Login Failed');
         }
@@ -118,7 +88,7 @@ const Login = () => {
               initialValues={{ remember: true }}
               layout="vertical"
             >
-              <p className="form-title">Login</p>
+              <p className="form-title">Admin Login</p>
               <div
                 style={{
                   display: 'flex',
@@ -174,37 +144,6 @@ const Login = () => {
                   {validator.message('Password', fields.password, 'required|passwwordLength')}{' '}
                 </div>
               </Form.Item>
-              <Form.Item
-                label={
-                  <span className="label">
-                    <span className="required-asterisk">*</span> Account Type{' '}
-                  </span>
-                }
-              >
-                <Radio.Group onChange={e => handleChange(e, 'type')} value={fields.type}>
-                  <Radio value={1}>User</Radio>
-                  <Radio value={2}>Restaurant Owner</Radio>
-                </Radio.Group>
-                <div className={validator.errorMessages.type ? 'error-message' : ''}>
-                  {' '}
-                  {validator.message('Type', fields.type, 'required')}{' '}
-                </div>
-              </Form.Item>
-              <Form.Item>
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    fontSize: '15px',
-                    fontFamily: 'sans-serif',
-                    fontWeight: 'bold',
-                  }}
-                >
-                  <p>
-                    Don't have an account yet? <a href="/register">Sign Up</a>
-                  </p>
-                </div>
-              </Form.Item>
               <Form.Item>
                 <div
                     style={{
@@ -216,7 +155,7 @@ const Login = () => {
                     }}
                 >
                   <p>
-                    <a href="/adminLogin">Admin Login</a>
+                    <a href="/login">User Login</a>
                   </p>
                 </div>
               </Form.Item>
@@ -232,17 +171,6 @@ const Login = () => {
                   Log In{' '}
                 </Button>
               </Form.Item>
-              <Form.Item>
-                <span style={{ display: 'flex', justifyContent: 'center' }}>Or</span>
-              </Form.Item>
-              <Form.Item>
-                <GoogleButton
-                  className="google"
-                  label="Sign In with Google"
-                  style={{ width: '100%' }}
-                  onClick={async () => handleGoogleLogin()}
-                />
-              </Form.Item>
             </Form>
           </div>
         </div>
@@ -250,4 +178,4 @@ const Login = () => {
     </Layout>
   );
 };
-export default Login;
+export default AdminLogin;
