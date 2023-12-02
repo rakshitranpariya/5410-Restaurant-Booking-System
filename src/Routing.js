@@ -20,6 +20,8 @@ const RestaurantTableForm = lazy(() => import('./components/addNewTablePage/addN
 const MenuPage = lazy(() => import('./components/MenuListing/P_MenulistingPage'));
 const ReservationListing = lazy(() => import('./components/ReservationListing/reservationListing'));
 const PageNotFound = lazy(() => import('./shared/404'));
+const AdminLogin = lazy(() => import('./components/AdminLogin/adminLogin'));
+const AdminDashboard = lazy(() => import('./components/AdminDashboard/adminDashboard'));
 const { Content } = Layout;
 
 const Routing = () => {
@@ -39,6 +41,10 @@ const Routing = () => {
       path: '/register',
       component: <Register />,
     },
+    {
+      path: '/adminLogin',
+      component: <AdminLogin />
+    }
   ].filter(cur => cur);
 
   const PrivateRoutes = [
@@ -82,6 +88,11 @@ const Routing = () => {
       component: <RestaurantTableForm />,
       type: '2',
     },
+    {
+      path: '/admin/dashboard',
+      component: <AdminDashboard />,
+      type: '3'
+    }
   ].filter(cur => cur && String(cur.type) == String(user.type));
 
   const PrivateRoute = ({ children }) => {
