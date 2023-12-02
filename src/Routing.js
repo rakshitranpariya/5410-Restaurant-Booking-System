@@ -72,7 +72,7 @@ const Routing = () => {
     {
       path: '/adminView',
       component: <TopCustomer />,
-      type: '1'
+      type: '3'
     },
     {
       path: '/admin/dashboard',
