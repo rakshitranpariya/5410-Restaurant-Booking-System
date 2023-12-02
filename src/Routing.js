@@ -15,6 +15,9 @@ const RestaurantListing = lazy(() =>
 );
 const MenuPage = lazy(() => import('./components/MenuListing/P_MenulistingPage'));
 const ReservationListing = lazy(() => import('./components/ReservationListing/reservationListing'));
+const MenuItemComponent = lazy(() => import('./components/MenuListingAdmin/menuListingAdmin'));
+const RestaurantTablesPage = lazy(() => import('./components/TableListingAdmin/TableListingPage'));
+
 const PageNotFound = lazy(() => import('./shared/404'));
 const AdminLogin = lazy(() => import('./components/AdminLogin/adminLogin'));
 const AdminDashboard = lazy(() => import('./components/AdminDashboard/adminDashboard'));
@@ -39,8 +42,8 @@ const Routing = () => {
     },
     {
       path: '/adminLogin',
-      component: <AdminLogin />
-    }
+      component: <AdminLogin />,
+    },
   ].filter(cur => cur);
 
   const PrivateRoutes = [
@@ -67,18 +70,38 @@ const Routing = () => {
     {
       path: '/dashboard',
       component: <Dashboard />,
-      type: '2'
+      type: '2',
     },
     {
       path: '/adminView',
       component: <TopCustomer />,
-      type: '3'
+      type: '3',
+    },
+    {
+      path: '/addMenuDetails',
+      component: <NewMenuEntry />,
+      type: '2',
+    },
+    {
+      path: '/addTableDetails',
+      component: <RestaurantTableForm />,
+      type: '2',
+    },
+    {
+      path: '/menuListingADMIN',
+      component: <MenuItemComponent />,
+      type: '2',
+    },
+    {
+      path: '/tableListingAdmin',
+      component: <RestaurantTablesPage />,
+      type: '2',
     },
     {
       path: '/admin/dashboard',
       component: <AdminDashboard />,
-      type: '3'
-    }
+      type: '3',
+    },
   ].filter(cur => cur && String(cur.type) == String(user.type));
 
   const PrivateRoute = ({ children }) => {

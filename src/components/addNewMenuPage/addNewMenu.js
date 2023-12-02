@@ -34,6 +34,8 @@ const NewMenuEntry = () => {
 
       console.log('Response:', response.data);
       // Handle the response as needed
+
+      navigate('/menuListingADMIN');
     } catch (error) {
       console.error('Error:', error);
       // Handle errors
