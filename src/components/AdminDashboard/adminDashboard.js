@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Layout, Card, Tabs } from 'antd';
+import { Layout, Tabs } from 'antd';
 import { useSelector } from 'react-redux';
 import Loader from '../../shared/loader';
 import ApiUtils from '../../helpers/APIUtils';
+import ReviewFilters from './ReviewFilters';
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
@@ -11,49 +12,37 @@ const api = () => new ApiUtils();
 
 const AdminDashboard = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('1'); // State to keep track of the active tab
   const { user } = useSelector((state) => state.auth);
 
-  const handleCardClick = (cardName) => {
-    console.log(`Clicked on ${cardName} card`);
+  const handletabClick = (tabKey) => {
+    console.log(`Clicked on tab ${tabKey}`);
+    setActiveTab(tabKey);
   };
 
-  const handleFilterReviewsClick = () => {
-    console.log('Filter Reviews clicked');
-  };
-
-  const cards = [
-    { name: 'Card 1', content: 'Content for Card 1' },
-    { name: 'Card 2', content: 'Content for Card 2' },
-    { name: 'Card 3', content: 'Content for Card 3' },
-    { name: 'Card 4', content: 'Content for Card 4' },
-    { name: 'Filter Reviews', onClick: handleFilterReviewsClick },
+  const tabs = [
+    { name: 'Tab 1', content: <div>Content for Tab 1</div> },
+    { name: 'Tab 2', content: <div>Content for Tab 2</div> },
+    { name: 'Tab 3', content: <div>Content for Tab 3</div> },
+    { name: 'Tab 4', content: <div>Content for Tab 4</div> },
+    { name: 'Filter Reviews', content: <ReviewFilters /> },
   ];
 
   return (
     <Layout style={{ flex: 1, overflow: 'hidden' }}>
       {isLoading && <Loader />}
       <Content style={{ padding: '24px', overflow: 'auto' }}>
-        <Tabs defaultActiveKey="1" style={{ marginBottom: 16 }}>
-          {cards.map((card, index) => (
-            <TabPane tab={card.name} key={`${index + 1}`}>
-              <div
-                style={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                }}
-              >
-              </div>
+        <Tabs activeKey={activeTab} onChange={handletabClick} style={{ marginBottom: 16 }}>
+          {tabs.map((tab, index) => (
+            <TabPane tab={tab.name} key={`${index + 1}`}>
+              {activeTab === `${index + 1}` && (
+                <div>
+                  {tab.content}
+                </div>
+              )}
             </TabPane>
           ))}
         </Tabs>
-        <iframe
-          title="Food Order Report"
-          width="100%"
-          height="1000"
-          src="https://lookerstudio.google.com/embed/reporting/051a3f6d-b42a-4249-9c56-1d95ec1f379e/page/tEnnC"
-          style={{ border: 0, marginTop: '20px' }}
-          allowFullScreen
-        ></iframe>
       </Content>
     </Layout>
   );
