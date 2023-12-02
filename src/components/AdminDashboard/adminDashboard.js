@@ -14,15 +14,11 @@ const AdminDashboard = () => {
   const { user } = useSelector((state) => state.auth);
 
   const handleCardClick = (cardName) => {
-    // You can add logic based on the cardName, for example, show different content
     console.log(`Clicked on ${cardName} card`);
-    // You can also conditionally set the iframe source based on the cardName
   };
 
   const handleFilterReviewsClick = () => {
-    // You can add logic for filtering reviews
     console.log('Filter Reviews clicked');
-    // You can set the iframe source or trigger other actions
   };
 
   const cards = [
