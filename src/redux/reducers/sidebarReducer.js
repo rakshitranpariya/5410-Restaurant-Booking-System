@@ -56,6 +56,13 @@ const initialState = {
       type: '2',
     },
     {
+      key: '/admin/dashboard',
+      label: 'Admin Dashboard',
+      icon: <EditOutlined />,
+      url: '/admin/dashboard',
+      type: '3',
+    },
+    {
       key: '/logout',
       label: 'Logout',
       icon: <LogoutOutlined />,

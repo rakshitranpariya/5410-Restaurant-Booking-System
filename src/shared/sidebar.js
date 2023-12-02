@@ -31,11 +31,12 @@ const Sidebar = () => {
       console.log(e.key);
       if (e.key === '/logout') {
         await dispatch(logout());
+        console.log(user);
+        user?.type === '3' ? navigate('/adminLogin') : navigate(`${e.url}`);
+      } else {
+        await dispatch(handleSidebarChange(e));
         navigate(`${e.url}`);
       }
-      await dispatch(handleSidebarChange(e));
-      if (e.key === '/products') navigate('/');
-      else navigate(`${e.url}`);
     } catch (e) {
       console.log(e);
     }

@@ -117,6 +117,13 @@ class ApiUtils {
       url: 'https://vzgth5nw0m.execute-api.us-east-1.amazonaws.com/prod/insertRestaurantKeys',
       data,
     });
+
+  getTableData = data =>
+    this.axios({
+      method: 'POST',
+      url: 'https://vzgth5nw0m.execute-api.us-east-1.amazonaws.com/prod/getTableDataPerRestaurantId',
+      data,
+    });
 }
 
 export default ApiUtils;
