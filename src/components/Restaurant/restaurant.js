@@ -63,8 +63,8 @@ const Restaurant = () => {
 
 
       let data = await axios.get(url)
-      console.log('DS List')
-      console.log(data);
+      // console.log('DS List')
+      // console.log(data);
       let jsonFilter = JSON.parse(data?.data?.body)
 
       let filterData = jsonFilter?.filter((f) => f.data.userId == userDetails?.id)
@@ -94,7 +94,7 @@ const Restaurant = () => {
 
   const getOffersMenuItemsData = async (restaurantid, menuListData) => {
     setLoading(true)
-
+    // debugger
     try {
       let url = "https://vzgth5nw0m.execute-api.us-east-1.amazonaws.com/prod/getOfferDataPerRestaurantid";
       let payload = {
@@ -106,26 +106,30 @@ const Restaurant = () => {
         }
       })
       let response = JSON.parse(data?.data?.body)
+      // console.log("[response?.map(m => m?.item)]", response?.map(m => m?.item))
 
       let mergeOfferData = menuListData?.map((item) => {
-        if ([response?.map(m => m?.id)].includes(item?.menuitemid)) {
-          let filterOffers = response?.filter(f => f?.id !== item?.menuitemid)
+        if (response?.map(m => m?.item).includes(item?.id)) {
+          let filterOffers = response?.filter(f => f?.item == item?.id)
+          console.log("Hello", filterOffers)
           return {
             ...item,
-            ...filterOffers[0]
+            ...filterOffers[0],
+            id: item?.id,
+            offerId: filterOffers[0]?.id
+          }
+        } else {
+          return {
+            ...item
           }
         }
-        return {
-          ...item
-        }
+
       })
       // console.log(mergeOfferData)
       if (response?.length > 0) {
         setMenuItemsOptions([...mergeOfferData])
       } else {
-        setMenuItemsOptions((prev) => {
-          return [...prev]
-        })
+        setMenuItemsOptions([...menuListData])
       }
       setLoading(false)
       setIsItemOfferset(true)
@@ -144,7 +148,7 @@ const Restaurant = () => {
   }
   const getMenuItemsData = async (restaurantid, isPopup) => {
     setLoading(true)
-
+    // debugger
     try {
       // let url = "https://l1j6zvbe7c.execute-api.us-east-1.amazonaws.com/individualmenulist";
       // let url = "https://vzgth5nw0m.execute-api.us-east-1.amazonaws.com/prod/getTableDataPerRestaurantId"
@@ -159,7 +163,7 @@ const Restaurant = () => {
         }
       })
       let response1 = JSON.parse(data?.data?.body)
-      let response = response1?.menuItems
+      let response = response1
       let filteSetData = response?.filter(f => f?.availability == "available").map((m) => {
         return {
           ...m,
@@ -168,11 +172,13 @@ const Restaurant = () => {
         }
       })
 
-      setMenuItemsOptions([...filteSetData])
+      // setMenuItemsOptions([...filteSetData])
 
       getOffersMenuItemsData(restaurantid, filteSetData)
       // setLoading(false)
-      let filterIds = filteSetData?.filter((f) => NewFormData?.menuitemid?.includes(f?.value))
+
+      let menuitemsId = NewFormData?.menuitemid.map((m) => m.menuitemid)
+      let filterIds = filteSetData?.filter((f) => menuitemsId.includes(f?.value))
       if (isPopup == "editDetails") {
         setLoading(true)
         setTimeout(() => {
@@ -312,7 +318,9 @@ const Restaurant = () => {
           "body": {
             ...formData,
             userId: userDetails?.id,
-            userEmail: userDetails?.email
+            userEmail: userDetails?.email,
+            menuitemid: formData.menuitemid.map((m) => { return { ...m, label: "" } })
+
 
 
           }
@@ -347,7 +355,15 @@ const Restaurant = () => {
         //   }
         // )
         // await axios.post(url_restaurant, data_restaurant, config.headers)
-
+        let reservationResponse = {
+          ...formData, userId: userDetails?.id,
+          userEmail: userDetails?.email,
+          menuitemid: formData.menuitemid.map((m) => { return { ...m, label: "" } })
+        }
+        reservationResponse.id = currentEditId
+        handleNotificationsForCustommerSprint1_2(reservationResponse)
+        handleNotificationsCustommerSprint2_1(reservationResponse)
+        handleNotificationsCustommerSprint2_3(reservationResponse)
 
         messageApi.open({
           type: 'success',
@@ -368,6 +384,7 @@ const Restaurant = () => {
           userId: userDetails?.id,
           userEmail: userDetails?.email,
           status: "Pending",
+          menuitemid: formData.menuitemid.map((m) => { return { ...m, label: "" } })
         }
 
 
@@ -388,24 +405,9 @@ const Restaurant = () => {
         let data = await axios.post(config.url, config.data, config.headers)
         let reservationResponse = JSON.parse(data?.data?.body)
 
-        let url_restaurant = "https://g4v91ogzca.execute-api.us-east-1.amazonaws.com/dev/schedule_notification"
-        let data_restaurant = JSON.stringify(
-          {
-            "input":
-            {
-              "reservationID": reservationResponse?.id,
-              "userID": userDetails?.id,
-              "scheduled_date": formData.reservationDate,
-              "scheduled_time": formData.reservationTime,
-              "message": "Your reservation is in 30 mins at {Restaurant name}",
-              "email": userDetails.email,
-              "eventType": "INSERT"
-            },
-            "name": reservationResponse?.id,
-            "stateMachineArn": "arn:aws:states:us-east-1:315128346896:stateMachine:restaurant_state_machine"
-          }
-        )
-        await axios.post(url_restaurant, data_restaurant, config.headers)
+        handleNotificationsForCustommerSprint1_2(reservationResponse)
+        handleNotificationsCustommerSprint2_1(reservationResponse)
+        handleNotificationsCustommerSprint2_3(reservationResponse)
 
 
         console.log("data", data)
@@ -420,19 +422,152 @@ const Restaurant = () => {
 
       }
 
+      // handleNotificationsCustommer()
 
-      handleCancelReservationModal()
       fetchData();
 
     } catch (error) {
       setLoading(false)
-
+      console.log(error)
       toast.error("Something went wrong!")
     }
 
 
 
   };
+
+  const handleNotificationsForCustommerSprint1_2 = async (reservationResponse) => {
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      // url: 'https://wvnzmflpyb.execute-api.us-east-1.amazonaws.com/reservation/createreservation',
+
+
+      headers: {
+        'Content-Type': 'application/json',
+        "Access-Control-Allow-Origin": "*"
+
+      },
+      // data: setData
+    };
+    try {
+      let url_restaurant = "https://g4v91ogzca.execute-api.us-east-1.amazonaws.com/dev/schedule_notification"
+      let data_restaurant = JSON.stringify(
+        {
+          "input":
+            `{
+            \"reservationID": \"${reservationResponse?.id}\",
+            \"userID": \"${userDetails?.id}\",
+            \"scheduled_date"\: \"${formData.reservationDate}\",
+            \"scheduled_time"\: \"${formData.reservationTime}\",
+            \"message"\: \"Your reservation is in 30 mins at {Restaurant name}\",
+             \"email"\: \"durgesh.techup@gmail.com\",
+            \"eventType"\: \"INSERT\"
+          }`,
+          "name": reservationResponse?.id,
+          "stateMachineArn": "arn:aws:states:us-east-1:315128346896:stateMachine:Customer_reservation_30min"
+        }
+      )
+      await axios.post(url_restaurant, data_restaurant, config.headers)
+      console.log("succeed!")
+
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
+
+  const handleNotificationsCustommerSprint2_1 = async (reservationResponse) => {
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      // url: 'https://wvnzmflpyb.execute-api.us-east-1.amazonaws.com/reservation/createreservation',
+
+
+      headers: {
+        'Content-Type': 'application/json',
+        "Access-Control-Allow-Origin": "*"
+
+      },
+      // data: setData
+    };
+    try {
+      let url_restaurant = "https://36mdmtzehbpsy2gdsbgxa4nn4a0lwpjy.lambda-url.us-east-1.on.aws/"
+      let data_restaurant = JSON.stringify(
+        {
+          "input": `{
+            \"reservationId\": \"${reservationResponse?.id}\",
+            \"restaurantEmail": \"${restaurentData?.filter((f) => f.id == formData.restaurantid)[0]?.email}\",
+            \"reservationDate": \"${formData.reservationDate}\",
+            \"reservationTime": \"${formData.reservationTime}\",
+            \"customerName": \"${formData.customerName}\",
+            \"numberOfGuests": \"${formData.numberOfGuests}\",
+            \"eventType": \"INSERT\",
+            \"menu":\"${formData.menuitemid?.map((m) => {
+            return {
+              menu_item: m.name
+            }
+          })}\"
+          }`,
+          "name": reservationResponse?.id,
+          "stateMachineArn": "arn:aws:states:us-east-1:315128346896:stateMachine:restaurant_state_machine"
+        }
+      )
+      await axios.post(url_restaurant, data_restaurant, config.headers)
+      console.log("succeed!")
+
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
+
+  const handleNotificationsCustommerSprint2_3 = async (reservationResponse) => {
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      // url: 'https://wvnzmflpyb.execute-api.us-east-1.amazonaws.com/reservation/createreservation',
+
+
+      headers: {
+        'Content-Type': 'application/json',
+        "Access-Control-Allow-Origin": "*"
+
+      },
+      // data: setData
+    };
+    try {
+      let url_restaurant = "https://g4v91ogzca.execute-api.us-east-1.amazonaws.com/dev/schedule_notification"
+      let data_restaurant = JSON.stringify(
+        {
+          "input": `{
+            \"reservationId\": \"${reservationResponse?.id}\",
+            \"restaurantEmail": \"${restaurentData?.filter((f) => f.id == formData.restaurantid)[0]?.email}\",
+            \"reservationDate": \"${formData.reservationDate}\",
+            \"reservationTime": \"${formData.reservationTime}\",
+            \"customerName": \"${formData.customerName}\",
+            \"numberOfGuests": \"${formData.numberOfGuests}\",
+            \"eventType": \"INSERT\",
+            \"menu":\"${formData.menuitemid?.map((m) => {
+            return {
+              menu_item: m.name
+            }
+          })}\"
+          }`,
+          "name": reservationResponse?.id,
+          "stateMachineArn": "arn:aws:states:us-east-1:315128346896:stateMachine:restaurant_state_machine"
+        }
+      )
+      await axios.post(url_restaurant, data_restaurant, config.headers)
+      console.log("succeed!")
+
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
+
+
 
   const handleEdit = async (reservation, isPopup) => {
 
@@ -453,6 +588,7 @@ const Restaurant = () => {
       setCurrentEditId(reservation?.id);
 
       setLoading(false)
+      // setMenuItemsOptions(reservations.data?.menuitemid)
 
       getMenuItemsData(reservation?.data?.restaurantid, isPopup)
 
@@ -493,6 +629,8 @@ const Restaurant = () => {
         duration: 10,
         style: { float: "right" }
       });
+
+
 
       setIsModalOpen(false);
       SetDeletereservationsId(null);
@@ -578,7 +716,11 @@ const Restaurant = () => {
     setMenuItemsOptions([])
     setFormData(reservation.data)
     setShowMenuItems(true)
-    getMenuItemsData(reservation?.data?.restaurantid)
+    // not calling any api
+    if (false) {
+      getMenuItemsData(reservation?.data?.restaurantid)
+
+    }
   }
   const Loader = () => {
     if (loading) {
@@ -712,6 +854,9 @@ const Restaurant = () => {
               </div>
 
             </div>}
+
+
+
             <div className='row' >
               <div className='col-6' >
                 <label>Reservation Date</label><span className='text-danger' >*</span>
@@ -745,6 +890,12 @@ const Restaurant = () => {
 
             </div>
 
+            {MenuItemsOptions?.filter((f) => f.availability == "available")?.map((m) => m?.offerId)?.length > 0 ?
+              <div className='text-warning mt-3' >
+                We have some offers for you please see menu items!
+              </div> : ""
+            }
+
             {(formData?.restaurantid != "" && isItemOfferset) && <div className='mt-3'>
               <label>Available Items in Menu</label>
 
@@ -758,7 +909,7 @@ const Restaurant = () => {
                         <span >{m.name}{","}</span>
                         &nbsp;
                         <span>Price: </span>
-                        {m?.offertype == "dollar" ?
+                        {m?.offertype == "amount" ?
                           <span >${Number(m?.price) - Number(m?.offernumber)} {" "} <span className='text-decoration-line-through'> ${Number(m.price)} </span> </span> :
                           <span>
                             {
@@ -770,8 +921,8 @@ const Restaurant = () => {
                         &nbsp;
 
                         &nbsp;
-                        {m?.offertype == "dollar" ?
-                          <span >{((Number(m?.price) - Number(m?.offernumber)) * 100) / Number(m?.price)} % Off</span> :
+                        {m?.offertype == "amount" ?
+                          <span >{parseFloat((Number(m?.offernumber) * 100) / Number(m?.price)).toFixed(2)} % Off</span> :
                           <span>
                             {
                               m?.offertype == "Discount" ? <span >{Number(m?.offernumber)} % Off</span> :
@@ -872,12 +1023,9 @@ const Restaurant = () => {
                   <td>
                     {reservation?.data?.customerName}
                   </td>
-                  {
-                    console.log("name", restaurentData?.filter((f) => Number(f.restaurantid) == Number(reservation?.data?.restaurantid)))
 
-                  }
                   <td>
-                    {restaurentData?.filter((f) => Number(f.restaurantid) == Number(reservation?.data?.restaurantid))[0]?.name}
+                    {restaurentData?.filter((f) => f.id == reservation?.data?.restaurantid)[0]?.name}
                   </td>
                   <td>
                     {reservation?.data?.reservationDate}

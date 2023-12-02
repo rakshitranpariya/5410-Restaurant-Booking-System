@@ -21,6 +21,8 @@ function Dashboard() {
 
     const [loading, setLoading] = useState(false)
     const restaurantOwnerId = useSelector((state) => state?.auth?.user?.id)
+    // const restaurantOwnerId = "gsSTivkk02fxi9xcdXfj"
+
 
     const [reservations, setReservations] = useState([]);
     const [chartDataForToday, setChartDataForToday] = useState([])
@@ -724,7 +726,7 @@ function Dashboard() {
                                     {/* {} */}
                                     <span>Total Number of Guests: </span>
                                     {
-                                        chartDataForToday.map(m => m["Table Booked"]).reduce((accumulator, currentValue) => {
+                                        chartDataForToday.map(m => m["Table Booked For"]).reduce((accumulator, currentValue) => {
                                             return accumulator + currentValue
                                         }, 0)
 
@@ -750,7 +752,7 @@ function Dashboard() {
                                     <YAxis />
                                     <Tooltip />
                                     <Legend />
-                                    <Bar dataKey="Table Booked" fill="#82ca9d" activeBar={<Rectangle fill="gold" stroke="purple" />} />
+                                    <Bar dataKey="Table Booked For" fill="#82ca9d" activeBar={<Rectangle fill="gold" stroke="purple" />} />
                                 </BarChart>
                             </ResponsiveContainer>}
                         </div>
@@ -806,7 +808,7 @@ function Dashboard() {
                                     <YAxis />
                                     <Tooltip />
                                     <Legend />
-                                    <Bar dataKey="Table Booked" fill="#82ca9d" activeBar={<Rectangle fill="gold" stroke="purple" />} />
+                                    <Bar dataKey="Table Booked For" fill="#82ca9d" activeBar={<Rectangle fill="gold" stroke="purple" />} />
                                 </BarChart>
                             </ResponsiveContainer>
 
@@ -823,7 +825,7 @@ function Dashboard() {
                                     {/* {} */}
                                     <span>Total Number of Guests: </span>
                                     {
-                                        chartDataForMonthly.map(m => m["Table Booked"]).reduce((accumulator, currentValue) => {
+                                        chartDataForMonthly.map(m => m["Table Booked For"]).reduce((accumulator, currentValue) => {
                                             return accumulator + currentValue
                                         }, 0)
 
@@ -852,7 +854,7 @@ function Dashboard() {
                                     <YAxis />
                                     <Tooltip />
                                     <Legend />
-                                    <Bar dataKey="Table Booked" fill="#82ca9d" activeBar={<Rectangle fill="gold" stroke="purple" />} />
+                                    <Bar dataKey="Table Booked For" fill="#82ca9d" activeBar={<Rectangle fill="gold" stroke="purple" />} />
                                 </BarChart>
                             </ResponsiveContainer>
 
