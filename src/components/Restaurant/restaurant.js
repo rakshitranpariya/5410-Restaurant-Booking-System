@@ -473,6 +473,9 @@ const Restaurant = () => {
 
     } catch (error) {
       console.log(error)
+    }finally{
+      setisShowAddReservation(false)
+
     }
 
   }
@@ -763,7 +766,15 @@ const Restaurant = () => {
                         <td className='border text-center'>{index + 1}</td>
                         <td className='border text-center'>{m.itemName}</td>
                         <td className='border text-center'>{m?.Category}</td>
-                        <td className='border text-center'>{"$"}{m?.price}</td>
+                        <td className='border text-center'>  {m?.offertype == "amount" ?
+                          <span >${Number(m?.price) - Number(m?.offernumber)} {" "} <span className='text-decoration-line-through'> ${Number(m.price)} </span> </span> :
+                          <span>
+                            {
+                              m?.offertype == "Discount" ? <span >${Number(m?.price) - (Number(m?.price) * Number(m?.offernumber)) / 100} {" "} <span className='text-decoration-line-through'> ${Number(m.price)} </span> </span> :
+                                <span >${Number(m?.price)}</span>
+                            }
+                          </span>
+                        } </td>
 
                       </tr>
                     </>
