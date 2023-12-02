@@ -163,7 +163,7 @@ const Restaurant = () => {
         }
       })
       let response1 = JSON.parse(data?.data?.body)
-      let response = response1
+      let response = response1?.menuItems
       let filteSetData = response?.filter(f => f?.availability == "available").map((m) => {
         return {
           ...m,
@@ -461,7 +461,7 @@ const Restaurant = () => {
             \"scheduled_date"\: \"${formData.reservationDate}\",
             \"scheduled_time"\: \"${formData.reservationTime}\",
             \"message"\: \"Your reservation is in 30 mins at {Restaurant name}\",
-             \"email"\: \"durgesh.techup@gmail.com\",
+             \"email"\: \"${userDetails?.email}\",,
             \"eventType"\: \"INSERT\"
           }`,
           "name": reservationResponse?.id,
@@ -495,22 +495,24 @@ const Restaurant = () => {
       let url_restaurant = "https://36mdmtzehbpsy2gdsbgxa4nn4a0lwpjy.lambda-url.us-east-1.on.aws/"
       let data_restaurant = JSON.stringify(
         {
-          "input": `{
-            \"reservationId\": \"${reservationResponse?.id}\",
-            \"restaurantEmail": \"${restaurentData?.filter((f) => f.id == formData.restaurantid)[0]?.email}\",
-            \"reservationDate": \"${formData.reservationDate}\",
-            \"reservationTime": \"${formData.reservationTime}\",
-            \"customerName": \"${formData.customerName}\",
-            \"numberOfGuests": \"${formData.numberOfGuests}\",
-            \"eventType": \"INSERT\",
-            \"menu":\"${formData.menuitemid?.map((m) => {
-            return {
-              menu_item: m.name
-            }
-          })}\"
-          }`,
-          "name": reservationResponse?.id,
-          "stateMachineArn": "arn:aws:states:us-east-1:315128346896:stateMachine:restaurant_state_machine"
+          
+
+            "reservationId": reservationResponse?.id,
+            "restaurantEmail": restaurentData?.filter((f) => f.id == formData.restaurantid)[0]?.email,
+            "reservationDate": formData.reservationDate,
+            "reservationTime": formData.reservationTime,
+            "customerName": formData.customerName,
+            "numberOfGuests": formData.numberOfGuests,
+            "eventType": "INSERT",
+            "menu": formData.menuitemid?.map((m) => {
+              return {
+                menu_item: m?.itemName
+              }
+            })
+  
+  
+          
+         
         }
       )
       await axios.post(url_restaurant, data_restaurant, config.headers)
@@ -889,8 +891,12 @@ const Restaurant = () => {
               </div>}
 
             </div>
+            {/* {
+              console.log("test",MenuItemsOptions?.filter((f) => f.availability == "available" && f?.offerId))
 
-            {MenuItemsOptions?.filter((f) => f.availability == "available")?.map((m) => m?.offerId)?.length > 0 ?
+            } */}
+
+            {MenuItemsOptions?.filter((f) => f.availability == "available" && f?.offerId)?.length > 0 ?
               <div className='text-warning mt-3' >
                 We have some offers for you please see menu items!
               </div> : ""
