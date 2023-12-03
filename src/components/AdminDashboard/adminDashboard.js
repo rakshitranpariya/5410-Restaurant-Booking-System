@@ -5,8 +5,8 @@ import Loader from '../../shared/loader';
 import ApiUtils from '../../helpers/APIUtils';
 import ReviewFilters from './ReviewFilters';
 import TopCustomers from './TopCustomers';
-import Top10Time from "./Top10Time";
-
+import Top10Time from './Top10Time';
+import Top10Restaurants from './Top10Restaurant';
 const { Content } = Layout;
 const { TabPane } = Tabs;
 
@@ -15,9 +15,9 @@ const api = () => new ApiUtils();
 const AdminDashboard = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('1'); // State to keep track of the active tab
-  const { user } = useSelector((state) => state.auth);
+  const { user } = useSelector(state => state.auth);
 
-  const handletabClick = (tabKey) => {
+  const handletabClick = tabKey => {
     console.log(`Clicked on tab ${tabKey}`);
     setActiveTab(tabKey);
   };
@@ -26,6 +26,8 @@ const AdminDashboard = () => {
     { name: 'Tab 1', content: <div>Content for Tab 1</div> },
     { name: 'Tab 2', content: <div>Content for Tab 2</div> },
     { name: 'Tab 10 Time for Food Order', content: <Top10Time /> },
+    { name: 'Top 10 Restaurant for Food Ordering', content: <Top10Restaurant /> },
+
     { name: 'Top 10 Customers', content: <TopCustomers /> },
     { name: 'Filter Reviews', content: <ReviewFilters /> },
   ];
@@ -37,11 +39,7 @@ const AdminDashboard = () => {
         <Tabs activeKey={activeTab} onChange={handletabClick} style={{ marginBottom: 16 }}>
           {tabs.map((tab, index) => (
             <TabPane tab={tab.name} key={`${index + 1}`}>
-              {activeTab === `${index + 1}` && (
-                <div>
-                  {tab.content}
-                </div>
-              )}
+              {activeTab === `${index + 1}` && <div>{tab.content}</div>}
             </TabPane>
           ))}
         </Tabs>
