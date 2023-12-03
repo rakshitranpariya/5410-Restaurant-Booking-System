@@ -17,6 +17,8 @@ const MenuPage = lazy(() => import('./components/MenuListing/P_MenulistingPage')
 const ReservationListing = lazy(() => import('./components/ReservationListing/reservationListing'));
 const MenuItemComponent = lazy(() => import('./components/MenuListingAdmin/menuListingAdmin'));
 const RestaurantTablesPage = lazy(() => import('./components/TableListingAdmin/TableListingPage'));
+const NewMenuEntry = lazy(() => import('./components/addNewMenuPage/addNewMenu'));
+const RestaurantTableForm = lazy(() => import('./components/addNewTablePage/addNewTable'));
 
 const PageNotFound = lazy(() => import('./shared/404'));
 const AdminLogin = lazy(() => import('./components/AdminLogin/adminLogin'));
