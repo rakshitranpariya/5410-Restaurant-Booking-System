@@ -20,6 +20,7 @@ const RestaurantMenuPage = () => {
             },
           }
         );
+        console.log(response);
         const parsedMenuItems = JSON.parse(response.data.body).menuItems;
         setMenuItems(parsedMenuItems);
       } catch (error) {
