@@ -27,13 +27,13 @@ const initialState = {
       url: '/reservationListing',
       type: '2',
     },
-    {
-      key: '/adminView',
-      label: 'Admin',
-      icon: <UserOutlined />,
-      url: '/adminView',
-      type: '3',
-    },
+    // {
+    //   key: '/adminView',
+    //   label: 'Admin',
+    //   icon: <UserOutlined />,
+    //   url: '/adminView',
+    //   type: '3',
+    // },
     {
       key: '/addRestaurantDetails',
       label: 'Edit Restaurant Details',
