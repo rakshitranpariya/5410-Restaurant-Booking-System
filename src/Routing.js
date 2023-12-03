@@ -5,6 +5,7 @@ import { Layout } from 'antd';
 import Loader from './shared/loader';
 
 const Dashboard = lazy(() => import('./components/Dashboard/dashboard'));
+const TopCustomer = lazy(() => import('./components/admin/TopCustomer'));
 const Sidebar = lazy(() => import('./shared/sidebar'));
 const Login = lazy(() => import('./components/Login/login'));
 const Restaurant = lazy(() => import('./components/Restaurant/restaurant'));
@@ -12,14 +13,16 @@ const Register = lazy(() => import('./components/Register/register'));
 const RestaurantListing = lazy(() =>
   import('./components/RestaurantListing/P_RestaurantListingPage')
 );
-const NewRestaurantListing = lazy(() =>
-  import('./components/addNewRestaurantPage/addNewRestaurant')
-);
-const NewMenuEntry = lazy(() => import('./components/addNewMenuPage/addNewMenu'));
-const RestaurantTableForm = lazy(() => import('./components/addNewTablePage/addNewTable'));
 const MenuPage = lazy(() => import('./components/MenuListing/P_MenulistingPage'));
 const ReservationListing = lazy(() => import('./components/ReservationListing/reservationListing'));
+const MenuItemComponent = lazy(() => import('./components/MenuListingAdmin/menuListingAdmin'));
+const RestaurantTablesPage = lazy(() => import('./components/TableListingAdmin/TableListingPage'));
+const NewMenuEntry = lazy(() => import('./components/addNewMenuPage/addNewMenu'));
+const RestaurantTableForm = lazy(() => import('./components/addNewTablePage/addNewTable'));
+
 const PageNotFound = lazy(() => import('./shared/404'));
+const AdminLogin = lazy(() => import('./components/AdminLogin/adminLogin'));
+const AdminDashboard = lazy(() => import('./components/AdminDashboard/adminDashboard'));
 const { Content } = Layout;
 
 const Routing = () => {
@@ -38,6 +41,10 @@ const Routing = () => {
     {
       path: '/register',
       component: <Register />,
+    },
+    {
+      path: '/adminLogin',
+      component: <AdminLogin />,
     },
   ].filter(cur => cur);
 
@@ -68,9 +75,9 @@ const Routing = () => {
       type: '2',
     },
     {
-      path: '/addRestaurantDetails',
-      component: <NewRestaurantListing />,
-      type: '2',
+      path: '/adminView',
+      component: <TopCustomer />,
+      type: '3',
     },
     {
       path: '/addMenuDetails',
@@ -81,6 +88,21 @@ const Routing = () => {
       path: '/addTableDetails',
       component: <RestaurantTableForm />,
       type: '2',
+    },
+    {
+      path: '/menuListingADMIN',
+      component: <MenuItemComponent />,
+      type: '2',
+    },
+    {
+      path: '/tableListingAdmin',
+      component: <RestaurantTablesPage />,
+      type: '2',
+    },
+    {
+      path: '/admin/dashboard',
+      component: <AdminDashboard />,
+      type: '3',
     },
   ].filter(cur => cur && String(cur.type) == String(user.type));
 

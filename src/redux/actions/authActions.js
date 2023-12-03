@@ -62,6 +62,7 @@ export const getUserByEmail = (email, accessToken) => async dispatch => {
     dispatch({ type: 'EXISTING_USER', payload: payloadData });
     localStorage.setItem('token', accessToken);
     localStorage.setItem('userEmail', email);
+    localStorage.setItem('userType', payloadData.type);
   } catch (err) {
     console.log(err);
     dispatch({ type: 'AUTH_FAILED' });
