@@ -10,13 +10,22 @@ import Kommunicate from '@kommunicate/kommunicate-chatbot-plugin';
 
 const App = () => {
   const [isLoaded, setLoaded] = useState(false);
-
+  const accessToken = localStorage.getItem('accessToken');
+  const userType = localStorage.getItem('userType');
+  console.log("userType:::", userType);
   useEffect(() => {
     (async () => {
-      Kommunicate.init('2b6c021219d0e7ce14f57aba4bcc1cca6', {
-        automaticChatOpenOnNavigation: true,
-        popupWidget: true,
-      });
+        if(userType == 1) {
+          Kommunicate.init('2b5873eace4273972e5d3ddbf604693f5', {
+            automaticChatOpenOnNavigation: true,
+            popupWidget: true,
+          });
+      } else if(userType == 2){
+        Kommunicate.init('1c1da9623227878fe3f8ef384f2199ac6', {
+          automaticChatOpenOnNavigation: true,
+          popupWidget: true,
+        });
+      }
       console.log('yoo');
       await store.dispatch(loadUser());
       setLoaded(true);
