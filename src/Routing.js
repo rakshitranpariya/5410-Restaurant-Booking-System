@@ -23,6 +23,9 @@ const RestaurantTableForm = lazy(() => import('./components/addNewTablePage/addN
 const PageNotFound = lazy(() => import('./shared/404'));
 const AdminLogin = lazy(() => import('./components/AdminLogin/adminLogin'));
 const AdminDashboard = lazy(() => import('./components/AdminDashboard/adminDashboard'));
+const OfferPage = lazy(() => import('./components/OfferListingAdmin/OfferPage'));
+const NewOfferEntry = lazy(() => import('./components/OfferListingAdmin/OfferPage'));
+
 const NewRestaurantListing = lazy(() =>
   import('./components/addNewRestaurantPage/addNewRestaurant')
 );
@@ -106,6 +109,16 @@ const Routing = () => {
     {
       path: '/tableListingAdmin',
       component: <RestaurantTablesPage />,
+      type: '2',
+    },
+    {
+      path: '/offerListingAdmin',
+      component: <OfferPage />,
+      type: '2',
+    },
+    {
+      path: '/addOfferDetails',
+      component: <NewOfferEntry />,
       type: '2',
     },
     {

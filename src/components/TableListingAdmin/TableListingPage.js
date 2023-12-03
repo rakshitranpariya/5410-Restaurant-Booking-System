@@ -3,10 +3,12 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import TableItemComponent from './TableListingComponent'; // Make sure to replace with the appropriate component
 import { useNavigate } from 'react-router-dom';
-
+import { useSelector } from 'react-redux';
 const RestaurantTablesPage = () => {
+  const { user } = useSelector(state => state.auth);
+
   const [tables, setTables] = useState([]);
-  const [restaurantId, setRestaurantId] = useState('123456');
+  const [restaurantId, setRestaurantId] = useState(user.id);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,7 +21,7 @@ const RestaurantTablesPage = () => {
           }
         );
         console.log(response);
-        const parsedTables = JSON.parse(response.data.body);
+        const parsedTables = response.data.body;
         setTables(parsedTables);
       } catch (error) {
         console.error('Error fetching table data:', error);

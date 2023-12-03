@@ -49,17 +49,17 @@ const initialState = {
       type: '2',
     },
     {
-      key: '/addTableDetails',
+      key: '/tableListingAdmin',
       label: 'Add New tables',
       icon: <EditOutlined />,
-      url: '/addTableDetails',
+      url: '/tableListingAdmin',
       type: '2',
     },
     {
-      key: '/tableListingAdmin',
-      label: 'Edit tables',
+      key: '/offerListingAdmin',
+      label: 'Edit Offers',
       icon: <EditOutlined />,
-      url: '/tableListingAdmin',
+      url: '/offerListingAdmin',
       type: '2',
     },
     {
