@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import Loader from '../../shared/loader';
 import ApiUtils from '../../helpers/APIUtils';
 import ReviewFilters from './ReviewFilters';
+import TopCustomers from './TopCustomers';
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
@@ -24,7 +25,7 @@ const AdminDashboard = () => {
     { name: 'Tab 1', content: <div>Content for Tab 1</div> },
     { name: 'Tab 2', content: <div>Content for Tab 2</div> },
     { name: 'Tab 3', content: <div>Content for Tab 3</div> },
-    { name: 'Tab 4', content: <div>Content for Tab 4</div> },
+    { name: 'Top 10 Customers', content: <TopCustomers /> },
     { name: 'Filter Reviews', content: <ReviewFilters /> },
   ];
 
