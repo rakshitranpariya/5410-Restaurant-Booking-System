@@ -24,7 +24,7 @@ const PageNotFound = lazy(() => import('./shared/404'));
 const AdminLogin = lazy(() => import('./components/AdminLogin/adminLogin'));
 const AdminDashboard = lazy(() => import('./components/AdminDashboard/adminDashboard'));
 const OfferPage = lazy(() => import('./components/OfferListingAdmin/OfferPage'));
-const NewOfferEntry = lazy(() => import('./components/OfferListingAdmin/OfferPage'));
+const NewOfferEntry = lazy(() => import('./components/addNewOfferPage/NewOfferEntry'));
 
 const NewRestaurantListing = lazy(() =>
   import('./components/addNewRestaurantPage/addNewRestaurant')

@@ -22,13 +22,16 @@ const NewOfferEntry = () => {
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
+        var data = {
+          restaurantid: user.id,
+        };
         const response = await axios.post(
           'https://vzgth5nw0m.execute-api.us-east-1.amazonaws.com/prod/getMenuDataPerRestaurantId',
-          {
-            restaurantid: user.id,
-          }
+          data
         );
-        setMenuItems(response.data.body || []);
+        console.log(response);
+        const menuData = JSON.parse(response.data.body).menuItems;
+        setMenuItems(menuData);
       } catch (error) {
         console.error('Error fetching menu items:', error);
       }
