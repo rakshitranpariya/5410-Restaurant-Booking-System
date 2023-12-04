@@ -1,10 +1,12 @@
-import https from 'https';
+const https = require('https');
 
 let restaurantsData = null;
+let selectedRestaurantData = null;
+let ownerEmail = null;
 let restaurantName = null;
 let reservationDetails = null;
 
-export const handler = async (event) => {
+exports.handler = async (event) => {
     try {
         console.log("Received event:");
         console.log(JSON.stringify(event, null, 2));
@@ -13,51 +15,134 @@ export const handler = async (event) => {
             const selectedIntent = findHighestConfidenceIntent(event['interpretations']);
 
             if (selectedIntent) {
-                console.log("SELECTED INTENT--------------", selectedIntent);
+                console.log("SELECTED INTENT-------------", selectedIntent);
 
                 switch (selectedIntent) {
                     case "init":
-                        await fetchRestaurantData("https://vzgth5nw0m.execute-api.us-east-1.amazonaws.com/prod/getRestaurantData");
+                        const data = await fetchRestaurantData("https://vzgth5nw0m.execute-api.us-east-1.amazonaws.com/prod/getRestaurantData");
+                        restaurantsData = data["body"];
+                        console.log("DATA::::", data["body"]);
+                        const reservationInfo = await fetchRestaurantData("https://wvnzmflpyb.execute-api.us-east-1.amazonaws.com/reservation/getallreservations");
+                        console.log("reservationInformation::::", reservationInfo["body"]);
+                        reservationDetails = reservationInfo["body"];
                         return handleInitIntent(selectedIntent);
 
                     case "ReservationInformation":
-                        // await fetchReservationData("https://wvnzmflpyb.execute-api.us-east-1.amazonaws.com/reservation/getallreservations");
-                        restaurantName = event['inputTranscript'];
+                        ownerEmail = event['inputTranscript'].trim();  // Trim any leading or trailing whitespaces
+                        console.log("ownerEmail", ownerEmail);
+                        console.log("restaurantsData", JSON.parse(restaurantsData));
+
+                        for (const item of JSON.parse(restaurantsData)) {
+                            console.log("ITEM:::", item["email"]);
+                            if (item["email"] == ownerEmail) {
+                                console.log("ITEM:::", item);
+                                selectedRestaurantData = item;
+                                break;
+                            }
+                        }
+
+                        if (selectedRestaurantData) {
+                            console.log("Owner's Restaurant Details:", selectedRestaurantData);
+                        } else {
+                            console.log("No Restaurant Details found for the ownerEmail:", ownerEmail);
+                        }
+
                         return handleReservationInformationIntent(selectedIntent);
+
 
                     case "reservationOfDay":
                         let date = event['inputTranscript'];
-                        return handleReservationOfDayIntent(date, selectedIntent);
+                        console.log("DATE:::", date, reservationDetails);
+
+                        const filteredData = [];
+
+                        for (const item of JSON.parse(reservationDetails)) {
+                            if (item && item["data"] && item["data"]["restaurantEmail"] && item["data"]["reservationDate"]) {
+                                if (item["data"]["restaurantEmail"] === ownerEmail && item["data"]["reservationDate"] === date) {
+                                    filteredData.push(item);
+                                }
+                            }
+                        }
+
+
+                        console.log("filteredData::::", filteredData);
+
+
+
+                        return handleReservationOfDayIntent(filteredData, selectedIntent);
+
 
                     case "reservationOfMonth":
                         let month = event['inputTranscript'];
-                        return handleReservationOfMonthIntent(month, selectedIntent);
+                        const year = 2023; // Adjust the year as needed
+                        const startDateString = `${year}-${month}-01`;
+                        const endDateString = `${year}-${month}-31`;
+
+                        const filteredMonthData = [];
+
+                        for (const item of JSON.parse(reservationDetails)) {
+                            if (item && item["data"] && item["data"]["restaurantEmail"] && item["data"]["reservationDate"]) {
+                                let reservationDate = new Date(item["data"]["reservationDate"]);
+
+                                if (
+                                    item["data"]["restaurantEmail"] === ownerEmail &&
+                                    reservationDate >= new Date(startDateString) &&
+                                    reservationDate <= new Date(endDateString)
+                                ) {
+                                    filteredMonthData.push(item);
+                                }
+                            }
+                        }
+
+                        console.log("filteredData::::", filteredMonthData);
+
+
+
+                        return handleReservationOfMonthIntent(filteredMonthData, selectedIntent);
 
                     case "openingTime":
-                        return handleOpeningTimeIntent(selectedIntent);
+                        console.log("OPENING TIME FOR::::::", selectedRestaurantData["openingHours"]);
+                        return handleOpeningTimeIntent(selectedRestaurantData["name"], selectedRestaurantData["openingHours"], selectedIntent);
 
                     case "editOpeningTime":
                         let editedOpeningTime = event['inputTranscript'];
-                        return handleEditOpeningTimeIntent(editedOpeningTime, selectedIntent);
+                        console.log("...................", editedOpeningTime);
+                        selectedRestaurantData["openingHours"] = editedOpeningTime;
+                        postData(selectedRestaurantData, "https://vzgth5nw0m.execute-api.us-east-1.amazonaws.com/prod/insertRestaurantKeys");
+                        return handleEditOpeningTimeIntent(selectedRestaurantData["name"], editedOpeningTime, selectedIntent);
 
                     case "restaurantTimeIntent":
                         return handleRestaurantTimeIntent(selectedIntent);
 
                     case "viewLocation":
-                        return handleViewLocationIntent(selectedIntent);
+                        console.log("OPENING TIME FOR::::::", selectedRestaurantData["city"]);
+                        return handleViewLocationIntent(selectedRestaurantData["name"], selectedRestaurantData["city"], selectedIntent);
 
                     case "editLocation":
                         let editedLocation = event['inputTranscript'];
-                        return handleEditLocationIntent(editedLocation, selectedIntent);
+                        console.log("...................", editedLocation);
+                        selectedRestaurantData["city"] = editedLocation;
+                        postData(selectedRestaurantData, "https://vzgth5nw0m.execute-api.us-east-1.amazonaws.com/prod/insertRestaurantKeys");
+                        return handleEditLocationIntent(selectedRestaurantData["name"], editedLocation, selectedIntent);
 
                     case "RestaurantLocationInfo":
                         return handleRestaurantLocationInfoIntent(selectedIntent);
 
                     case "menuAvailability":
-                        return handleMenuAvailabilityIntent(selectedIntent);
+                        console.log("OPENING TIME FOR::::::", selectedRestaurantData["availability"]);
+                        return handleMenuAvailabilityIntent(selectedRestaurantData["name"], selectedRestaurantData["availability"], selectedIntent);
 
                     case "reservationAvailability":
-                        return handleReservationAvailabilityIntent(selectedIntent);
+                        console.log("OPENING TIME FOR::::::", selectedRestaurantData["availability"]);
+                        return handleReservationAvailabilityIntent(selectedRestaurantData["name"], selectedRestaurantData["availability"], selectedIntent);
+
+                    case "readRestaurantRating":
+                        console.log("Rating::::", selectedRestaurantData["rating"]);
+                        return handleReadRestaurantRating(selectedRestaurantData["name"], selectedRestaurantData["rating"], selectedIntent);
+
+                    case "readRestaurantReviews":
+                        console.log("Reviews::::", selectedRestaurantData["review"]);
+                        return handleReadRestaurantReviews(selectedRestaurantData["name"], selectedRestaurantData["review"], selectedIntent);
 
                     default:
                         return createUnknownIntentResponse();
@@ -74,8 +159,15 @@ export const handler = async (event) => {
 };
 
 async function fetchDataFromAPI(apiUrl) {
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    };
+
     return new Promise((resolve, reject) => {
-        https.get(apiUrl, (response) => {
+        const req = https.request(apiUrl, options, (response) => {
             let data = '';
 
             response.on('data', (chunk) => {
@@ -90,8 +182,44 @@ async function fetchDataFromAPI(apiUrl) {
                 reject(error);
             });
         });
+
+        req.end();
     });
 }
+
+async function postDataAPI(requestData, apiUrl) {
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    };
+
+    return new Promise((resolve, reject) => {
+        const req = https.request(apiUrl, options, (response) => {
+            let data = '';
+
+            response.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            response.on('end', () => {
+                resolve(data);
+            });
+
+            response.on('error', (error) => {
+                reject(error);
+            });
+        });
+
+        // Send the request data in the request body
+        req.write(JSON.stringify(requestData));
+
+        // End the request
+        req.end();
+    });
+}
+
 
 function createUnknownIntentResponse() {
     return {
@@ -101,15 +229,14 @@ function createUnknownIntentResponse() {
 
 async function fetchRestaurantData(apiUrl) {
     const data = await fetchDataFromAPI(apiUrl);
-    restaurantsData = JSON.parse(data);
-    console.log("restaurantsData:::", restaurantsData);
+    const resturnDataObj = JSON.parse(data);
+    return resturnDataObj;
 }
 
-async function fetchReservationData(apiUrl) {
-    const data = await fetchDataFromAPI(apiUrl);
-    reservationDetails = JSON.parse(data);
-    console.log("reservationDetails:::", reservationDetails);
+async function postData(requestBody, apiUrl) {
+    const data = await postDataAPI(requestBody, apiUrl);
 }
+
 
 function findHighestConfidenceIntent(interpretations) {
     let highestConfidence = -1;
@@ -189,7 +316,22 @@ function handleReservationInformationIntent(selectedIntent) {
     };
 }
 
-function handleReservationOfDayIntent(date, selectedIntent) {
+function handleReservationOfDayIntent(filteredData, selectedIntent) {
+    // Display reservation details for all customers
+    const reservationMessages = [];
+
+    for (const reservation of filteredData) {
+        const reservationTime = reservation.data.reservationTime;
+        const customerName = reservation.data.customerName;
+        const numberOfGuests = reservation.data.numberOfGuests;
+        const reservationDate = reservation.data.reservationDate;
+
+        reservationMessages.push({
+            contentType: "PlainText",
+            content: `Reservation Time: ${reservationTime}, Name: ${customerName}, No. of Guests: ${numberOfGuests}, Date: ${reservationDate}`
+        });
+    }
+
     return {
         sessionState: {
             dialogAction: {
@@ -203,10 +345,7 @@ function handleReservationOfDayIntent(date, selectedIntent) {
             },
         },
         messages: [
-            {
-                contentType: "PlainText",
-                content: date,
-            },
+            ...reservationMessages,
             {
                 contentType: "PlainText",
                 content: "Is there anything else I can help you with?",
@@ -215,7 +354,22 @@ function handleReservationOfDayIntent(date, selectedIntent) {
     };
 }
 
-function handleReservationOfMonthIntent(month, selectedIntent) {
+
+function handleReservationOfMonthIntent(filteredData, selectedIntent) {
+    const reservationMessages = [];
+
+    for (const reservation of filteredData) {
+        const reservationTime = reservation.data.reservationTime;
+        const customerName = reservation.data.customerName;
+        const numberOfGuests = reservation.data.numberOfGuests;
+        const reservationDate = reservation.data.reservationDate;
+
+        reservationMessages.push({
+            contentType: "PlainText",
+            content: `Reservation Time: ${reservationTime}, Name: ${customerName}, No. of Guests: ${numberOfGuests}, Date: ${reservationDate}`
+        });
+    }
+
     return {
         sessionState: {
             dialogAction: {
@@ -229,10 +383,7 @@ function handleReservationOfMonthIntent(month, selectedIntent) {
             },
         },
         messages: [
-            {
-                contentType: "PlainText",
-                content: month,
-            },
+            ...reservationMessages,
             {
                 contentType: "PlainText",
                 content: "Is there anything else I can help you with?",
@@ -241,9 +392,9 @@ function handleReservationOfMonthIntent(month, selectedIntent) {
     };
 }
 
-function handleOpeningTimeIntent(selectedIntent) {
-    let openingTime = "11 pm";
-    let openingTimeMessage = `Opening time for ${restaurantName} is ${openingTime}`;
+function handleOpeningTimeIntent(name, time, selectedIntent) {
+    let openingTime = time;
+    let openingTimeMessage = `Opening time for ${name} is ${openingTime}`;
     return {
         sessionState: {
             dialogAction: {
@@ -269,8 +420,8 @@ function handleOpeningTimeIntent(selectedIntent) {
     };
 }
 
-function handleEditOpeningTimeIntent(editedOpeningTime, selectedIntent) {
-    let editedOpeningTimeMessage = `Updated opening time for ${restaurantName} is ${editedOpeningTime}`;
+function handleEditOpeningTimeIntent(name, editedOpeningTime, selectedIntent) {
+    let editedOpeningTimeMessage = `Updated opening time for ${name} is ${editedOpeningTime}`;
     return {
         sessionState: {
             dialogAction: {
@@ -332,9 +483,9 @@ function handleRestaurantTimeIntent(selectedIntent) {
     };
 }
 
-function handleViewLocationIntent(selectedIntent) {
-    let restaurantLocation = "Halifax";
-    let restaurantLocationMessage = `Location of ${restaurantName} is ${restaurantLocation}`;
+function handleViewLocationIntent(name, location, selectedIntent) {
+    let restaurantLocation = location;
+    let restaurantLocationMessage = `Location of ${name} is ${restaurantLocation}`;
     return {
         sessionState: {
             dialogAction: {
@@ -360,8 +511,8 @@ function handleViewLocationIntent(selectedIntent) {
     };
 }
 
-function handleEditLocationIntent(editedLocation, selectedIntent) {
-    let editedLocationMessage = `Updated location of ${restaurantName} is ${editedLocation}`;
+function handleEditLocationIntent(name, editedLocation, selectedIntent) {
+    let editedLocationMessage = `Updated location of ${name} is ${editedLocation}`;
     return {
         sessionState: {
             dialogAction: {
@@ -423,9 +574,9 @@ function handleRestaurantLocationInfoIntent(selectedIntent) {
     };
 }
 
-function handleMenuAvailabilityIntent(selectedIntent) {
+function handleMenuAvailabilityIntent(name, availability, selectedIntent) {
     let menu = "menu list";
-    let menuMessage = `Menu of ${restaurantName} is ${menu}`;
+    let menuMessage = `Menu of ${name} is ${availability}`;
     return {
         sessionState: {
             dialogAction: {
@@ -451,9 +602,65 @@ function handleMenuAvailabilityIntent(selectedIntent) {
     };
 }
 
-function handleReservationAvailabilityIntent(selectedIntent) {
+function handleReservationAvailabilityIntent(name, availability, selectedIntent) {
     let reservation = "reservation list";
-    let reservationMessage = `Reservation availability of ${restaurantName} is ${reservation}`;
+    let reservationMessage = `Reservation of ${name} is ${availability}`;
+    return {
+        sessionState: {
+            dialogAction: {
+                type: "Close",
+                fulfillmentState: "Fulfilled",
+            },
+            intent: {
+                confirmationState: "Confirmed",
+                name: selectedIntent,
+                state: "Fulfilled",
+            },
+        },
+        messages: [
+            {
+                contentType: "PlainText",
+                content: reservationMessage,
+            },
+            {
+                contentType: "PlainText",
+                content: "Is there anything else I can help you with?",
+            },
+        ],
+    };
+}
+
+function handleReadRestaurantRating(name, rating, selectedIntent) {
+    let reservation = "reservation list";
+    let reservationMessage = `Rating of ${name} is ${rating}`;
+    return {
+        sessionState: {
+            dialogAction: {
+                type: "Close",
+                fulfillmentState: "Fulfilled",
+            },
+            intent: {
+                confirmationState: "Confirmed",
+                name: selectedIntent,
+                state: "Fulfilled",
+            },
+        },
+        messages: [
+            {
+                contentType: "PlainText",
+                content: reservationMessage,
+            },
+            {
+                contentType: "PlainText",
+                content: "Is there anything else I can help you with?",
+            },
+        ],
+    };
+}
+
+function handleReadRestaurantReviews(name, reviews, selectedIntent) {
+    let reservation = "reservation list";
+    let reservationMessage = `Reviews of ${name} is ${reviews}`;
     return {
         sessionState: {
             dialogAction: {
