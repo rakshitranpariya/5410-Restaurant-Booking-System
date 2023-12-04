@@ -1,38 +1,23 @@
-# Stage 1: Build the React application
-FROM node:16-slim
+# Use an official Node.js runtime as a parent image
+FROM node:16-alpine
 
-# Set the working directory inside the container
-
+# Set the working directory
 WORKDIR /app
- 
-# Copy the package.json and package-lock.json files to the container's working directory
 
-COPY package.json ./
- 
-# Install dependencies
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json ./
 
-RUN rm -rf node_modules package-lock.json
-RUN npm install --verbose
- 
- 
-# Copy the rest of the application code to the container's working directory
+# Install app dependencies
+RUN npm install
 
-COPY src ./src
+# Copy the application code to the working directory
+COPY . .
 
-COPY public ./public
- 
 # Build the React app
-
 RUN npm run build
- 
-# Remove unnecessary node_modules (if needed)
 
-RUN rm -rf node_modules
- 
-# Install serve globally
+# Expose the port that Cloud Run will use
+EXPOSE 8080
 
-RUN npm i -g serve
- 
-# Set the command to start the server
-
-CMD ["serve", "-s", "build"]
+# Define the command to run your app
+CMD ["npm", "start"]
