@@ -15,4 +15,4 @@ const TopFoodItems = () => {
     );
 };
 
-export default TopTime;
+export default TopFoodItems;
