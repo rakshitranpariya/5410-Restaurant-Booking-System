@@ -3,10 +3,11 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import MenuItemComponent from './menuListingAdminComponent';
 import { useNavigate } from 'react-router-dom';
-
+import { useSelector } from 'react-redux';
 const RestaurantMenuPage = () => {
+  const { user } = useSelector(state => state.auth);
   const [menuItems, setMenuItems] = useState([]);
-  const [restaurantId, setRestaurantId] = useState();
+  const [restaurantId, setRestaurantId] = useState(user.id);
   const navigate = useNavigate();
 
   useEffect(() => {
