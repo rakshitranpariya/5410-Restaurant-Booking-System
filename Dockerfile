@@ -11,7 +11,8 @@ COPY package.json ./
  
 # Install dependencies
 
-RUN npm i
+RUN rm -rf node_modules package-lock.json
+RUN npm install --verbose
  
  
 # Copy the rest of the application code to the container's working directory
