@@ -15,9 +15,16 @@ const initialState = {
     },
     {
       key: '/restaurants',
-      label: 'Restaurants',
+      label: 'Reservation',
       icon: <UserOutlined />,
       url: '/restaurants',
+      type: '1',
+    },
+    {
+      key: '/restaurantListing',
+      label: 'Restaurants',
+      icon: <UserOutlined />,
+      url: '/restaurantListing',
       type: '1',
     },
     {
