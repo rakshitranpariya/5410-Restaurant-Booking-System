@@ -5,6 +5,8 @@ import Loader from '../../shared/loader';
 import ApiUtils from '../../helpers/APIUtils';
 import ReviewFilters from './ReviewFilters';
 import TopCustomers from './TopCustomers';
+import Top10Time from "./Top10Time";
+import TopFoodItems from "./Top10FoodItems";
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
@@ -22,9 +24,9 @@ const AdminDashboard = () => {
   };
 
   const tabs = [
-    { name: 'Tab 1', content: <div>Content for Tab 1</div> },
     { name: 'Tab 2', content: <div>Content for Tab 2</div> },
-    { name: 'Tab 3', content: <div>Content for Tab 3</div> },
+    { name: 'Tab 10 Time for Food Order', content: <Top10Time /> },
+    { name: 'Tab 10 Food items', content: <TopFoodItems /> },
     { name: 'Top 10 Customers', content: <TopCustomers /> },
     { name: 'Filter Reviews', content: <ReviewFilters /> },
   ];

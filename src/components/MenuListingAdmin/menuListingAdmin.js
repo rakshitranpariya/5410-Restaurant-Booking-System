@@ -10,17 +10,19 @@ const RestaurantMenuPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    var data = {
+      restaurantid: restaurantId,
+    };
+
     const fetchMenuData = async () => {
       try {
         const response = await axios.post(
           'https://vzgth5nw0m.execute-api.us-east-1.amazonaws.com/prod/getMenuDataPerRestaurantId',
-          {
-            params: {
-              restaurantid: restaurantId,
-            },
-          }
+          data
         );
+        console.log(response);
         const parsedMenuItems = JSON.parse(response.data.body).menuItems;
+        console.log(parsedMenuItems);
         setMenuItems(parsedMenuItems);
       } catch (error) {
         console.error('Error fetching menu data:', error);
