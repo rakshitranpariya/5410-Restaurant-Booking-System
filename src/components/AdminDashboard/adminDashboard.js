@@ -5,14 +5,11 @@ import Loader from '../../shared/loader';
 import ApiUtils from '../../helpers/APIUtils';
 import ReviewFilters from './ReviewFilters';
 import TopCustomers from './TopCustomers';
-<<<<<<< HEAD
 import Top10Time from './Top10Time';
 import Top10Restaurants from './Top10Restaurant';
-=======
-import Top10Time from "./Top10Time";
-import TopFoodItems from "./Top10FoodItems";
 
->>>>>>> development
+import TopFoodItems from './Top10FoodItems';
+
 const { Content } = Layout;
 const { TabPane } = Tabs;
 
@@ -29,14 +26,12 @@ const AdminDashboard = () => {
   };
 
   const tabs = [
+    { name: 'Tab 1', content: <div>Content for Tab 1</div> },
     { name: 'Tab 2', content: <div>Content for Tab 2</div> },
     { name: 'Tab 10 Time for Food Order', content: <Top10Time /> },
-<<<<<<< HEAD
-    { name: 'Top 10 Restaurant for Food Ordering', content: <Top10Restaurant /> },
+    { name: 'Top 10 Restaurant for Food Ordering', content: <Top10Restaurants /> },
 
-=======
     { name: 'Tab 10 Food items', content: <TopFoodItems /> },
->>>>>>> development
     { name: 'Top 10 Customers', content: <TopCustomers /> },
     { name: 'Filter Reviews', content: <ReviewFilters /> },
   ];
