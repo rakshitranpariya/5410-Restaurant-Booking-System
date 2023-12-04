@@ -23,9 +23,8 @@ const RestaurantListingPage = () => {
         console.error('Error:', error.message);
       }
     };
-    //.
     fetchData();
-  }, []); // Empty dependency array to fetch data only on component mount
+  }, []);
 
   const handleReservationClick = () => {
     // Navigate to "/restaurants"
@@ -33,25 +32,23 @@ const RestaurantListingPage = () => {
   };
 
   return (
-    <div>
-      <h1 className="m-5">Restaurant List</h1>
-      <div className="container">
-        <div className="row">
-          {restaurantData.map(restaurant => (
-            <div key={restaurant.id} className="col-md-4">
-              <RestaurantTile
-                restaurantId={restaurant.id}
-                email={restaurant.email}
-                title={restaurant.name}
-                city={restaurant.city}
-                startTime={restaurant.openingHours}
-                endTime={restaurant.closingHours}
-                currentStatus={restaurant.currentStatus}
-                availability={restaurant.availability}
-              />
-            </div>
-          ))}
-        </div>
+    <div className="my-5 mx-auto" style={{ maxWidth: '800px' }}>
+      <h1 className="text-center mb-5">Restaurant List</h1>
+      <div className="row">
+        {restaurantData.map(restaurant => (
+          <div key={restaurant.id} className="col-md-12 mb-4">
+            <RestaurantTile
+              restaurantId={restaurant.id}
+              email={restaurant.email}
+              title={restaurant.name}
+              city={restaurant.city}
+              startTime={restaurant.openingHours}
+              endTime={restaurant.closingHours}
+              currentStatus={restaurant.currentStatus}
+              availability={restaurant.availability}
+            />
+          </div>
+        ))}
       </div>
       <div className="text-center mt-4">
         <button className="btn btn-primary btn-lg" onClick={handleReservationClick}>

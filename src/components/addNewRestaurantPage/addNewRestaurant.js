@@ -34,6 +34,7 @@ const NewRestaurantListing = () => {
       );
 
       console.log('Response:', response.data);
+      alert('Restaurant details Updated Successfully');
       // Handle the response as needed
     } catch (error) {
       console.error('Error:', error);
@@ -77,17 +78,6 @@ const NewRestaurantListing = () => {
                 type="time"
                 name="closingHours"
                 value={formData.closingHours}
-                onChange={handleChange}
-                className="form-control"
-              />
-            </div>
-
-            <div className="mb-3 text-start">
-              <label className="form-label">Availability:</label>
-              <input
-                type="text"
-                name="availability"
-                value={formData.availability}
                 onChange={handleChange}
                 className="form-control"
               />

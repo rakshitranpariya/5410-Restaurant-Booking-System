@@ -33,6 +33,7 @@ const RestaurantTableForm = () => {
       );
 
       console.log('Response:', response.data);
+      navigate('/tableListingAdmin');
     } catch (error) {
       console.error('Error:', error);
     }

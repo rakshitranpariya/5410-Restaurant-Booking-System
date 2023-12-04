@@ -27,6 +27,7 @@ const OfferItemComponent = ({
       );
 
       console.log(response);
+      window.location.reload();
       //   location.reload();
     } catch (error) {
       console.error('Error deleting offer item:', error);
@@ -42,10 +43,10 @@ const OfferItemComponent = ({
               <div className="card-title">Item: {item}</div>
             </div>
             <div className="col-md-3 mb-2">
-              <div className="card-text">Offer Number: {offerNumber}</div>
+              <div className="card-text"> {offerNumber}</div>
             </div>
             <div className="col-md-3 mb-2">
-              <div className="card-text">Offer Type: {offerType}</div>
+              <div className="card-text"> {offerType}</div>
             </div>
             <div className="col-md-3 mb-2 text-md-end">
               <button className="btn btn-primary" onClick={handleDeleteClick}>

@@ -16,7 +16,7 @@ const OfferPage = () => {
         const response = await axios.post(
           'https://vzgth5nw0m.execute-api.us-east-1.amazonaws.com/prod/getOfferDataPerRestaurantid',
           {
-            restaurantId: restaurantId,
+            restaurantId: user.id,
           }
         );
         const parsedOffers = JSON.parse(response.data.body);
