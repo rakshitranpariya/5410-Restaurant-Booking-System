@@ -1,6 +1,6 @@
 import React from 'react';
 
-const TopTime = () => {
+const TopRestaurant = () => {
   return (
     <iframe
       width="600"
@@ -13,4 +13,4 @@ const TopTime = () => {
   );
 };
 
-export default TopTime;
+export default TopRestaurant;
