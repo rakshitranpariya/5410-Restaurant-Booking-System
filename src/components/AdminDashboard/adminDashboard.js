@@ -6,7 +6,7 @@ import ApiUtils from '../../helpers/APIUtils';
 import ReviewFilters from './ReviewFilters';
 import TopCustomers from './TopCustomers';
 import Top10Time from './Top10Time';
-import Top10Restaurants from './Top10Restaurant';
+import TopRestaurant from './Top10Restaurant';
 
 import TopFoodItems from './Top10FoodItems';
 
@@ -29,7 +29,7 @@ const AdminDashboard = () => {
     { name: 'Tab 1', content: <div>Content for Tab 1</div> },
     { name: 'Tab 2', content: <div>Content for Tab 2</div> },
     { name: 'Tab 10 Time for Food Order', content: <Top10Time /> },
-    { name: 'Top 10 Restaurant for Food Ordering', content: <Top10Restaurants /> },
+    { name: 'Top 10 Restaurant for Food Ordering', content: <TopRestaurant /> },
 
     { name: 'Tab 10 Food items', content: <TopFoodItems /> },
     { name: 'Top 10 Customers', content: <TopCustomers /> },

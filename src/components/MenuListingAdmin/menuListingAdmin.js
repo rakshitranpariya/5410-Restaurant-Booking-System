@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 const RestaurantMenuPage = () => {
   const [menuItems, setMenuItems] = useState([]);
-  const [restaurantId, setRestaurantId] = useState('rest_123');
+  const [restaurantId, setRestaurantId] = useState();
   const navigate = useNavigate();
 
   useEffect(() => {
