@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import OfferItemComponent from './OfferItemComponent'; // Update import as needed
+import OfferItemComponent from './OfferItemComponent';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -33,11 +33,6 @@ const OfferPage = () => {
   const handleAddOfferClick = () => {
     // Logic for adding a new offer
     navigate('/addOfferDetails'); // Update the route based on your setup
-  };
-
-  const refreshOffers = () => {
-    // Function to refresh offers after deletion
-    fetchOfferData();
   };
 
   return (
