@@ -1,5 +1,5 @@
 # Stage 1: Build the React application
-FROM node:16 as builder
+FROM node:14-slim
 
 # Set the working directory inside the container
 
