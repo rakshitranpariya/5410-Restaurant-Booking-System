@@ -1,24 +1,36 @@
 # Stage 1: Build the React application
 FROM node:16 as builder
+
+# Set the working directory inside the container
+
 WORKDIR /app
  
-COPY package*.json yarn.lock ./
-RUN yarn install
+# Copy the package.json and package-lock.json files to the container's working directory
+
+COPY package.json ./
  
-COPY . .
-RUN yarn build
+# Install dependencies
+
+RUN npm i
  
-# Stage 2: Create the production-ready image with Nginx
-FROM nginx
+# Copy the rest of the application code to the container's working directory
+
+COPY src ./src
+
+COPY public ./public
  
-# Remove default Nginx configuration
-RUN rm -rf /etc/nginx/conf.d
+# Build the React app
+
+RUN npm run build
  
-# Copy custom NGINX configuration
-COPY nginx /etc/nginx
+# Remove unnecessary node_modules (if needed)
+
+RUN rm -rf node_modules
  
-# Expose port 80 for the application
-EXPOSE 80
+# Install serve globally
+
+RUN npm i -g serve
  
-# Copy the build output from the builder stage to Nginx's web root
-COPY --from=builder /app/build /usr/share/nginx/html
+# Set the command to start the server
+
+CMD ["serve", "-s", "build"]
