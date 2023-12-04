@@ -13,6 +13,7 @@ COPY package.json ./
 
 RUN npm i
  
+ 
 # Copy the rest of the application code to the container's working directory
 
 COPY src ./src
