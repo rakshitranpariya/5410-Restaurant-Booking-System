@@ -27,6 +27,7 @@ const RestaurantListingPage = () => {
   }, []);
 
   const handleReservationClick = () => {
+    // Navigate to "/restaurants"
     navigate('/restaurants');
   };
 
