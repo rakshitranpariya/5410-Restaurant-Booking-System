@@ -17,7 +17,6 @@ const RestaurantTile = ({
 
   const handleViewMenu = useCallback(() => {
     if (restaurantId) {
-      restaurantId = '123456';
       console.log('Navigating to menu with restaurantId:', restaurantId);
       navigate(`/menu/${restaurantId}`);
     } else {
