@@ -135,10 +135,10 @@ const Routing = () => {
 
   const PublicRoute = ({ children }) => {
     if (isAuthenticated)
-      user.type === '1'
+      user.type.toString() === '1'
         ? navigate('/restaurantListing', { replace: true })
         : navigate('/reservationListing', { replace: true });
-    return isAuthenticated ? user.type === '1' ? <Restaurant /> : <ReservationListing /> : children;
+    return isAuthenticated ? user.type.toString() === '1' ? <Restaurant /> : <ReservationListing /> : children;
   };
 
   return (
