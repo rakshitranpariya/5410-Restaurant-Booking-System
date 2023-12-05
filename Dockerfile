@@ -4,23 +4,20 @@ FROM node:16-alpine
 # Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the working directory
-COPY package*.json ./
+# Copy package.json and yarn.lock to the working directory
+COPY package.json yarn.lock ./
 
-# Install app dependencies
-RUN npm cache clean --force
-RUN rm -rf node_modules
-
-RUN npm install
+# Install app dependencies using Yarn
+RUN yarn install --frozen-lockfile
 
 # Copy the application code to the working directory
 COPY . .
 
 # Build the React app
-RUN npm run build
+RUN yarn build
 
-# Expose the port that Cloud Run will use
+# Expose the port that your React app is listening on
 EXPOSE 80
 
 # Define the command to run your app
-CMD ["npm", "start"]
+CMD ["yarn", "start"]
