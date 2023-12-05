@@ -8,6 +8,9 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install app dependencies
+RUN npm cache clean --force
+RUN rm -rf node_modules
+
 RUN npm install
 
 # Copy the application code to the working directory
